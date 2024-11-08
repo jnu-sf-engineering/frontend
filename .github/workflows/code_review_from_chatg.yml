@@ -12,9 +12,14 @@ jobs:
   code-review:
     runs-on: ubuntu-latest
     steps:
-      - uses: anc95/ChatGPT-CodeReview@main
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run ChatGPT Code Review
+        uses: anc95/ChatGPT-CodeReview@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LANGUAGE: Korean
           MODEL: gpt-3.5-turbo
+          ACTIONS_RUNNER_DEBUG: 'true'  # 디버그 모드 활성화
