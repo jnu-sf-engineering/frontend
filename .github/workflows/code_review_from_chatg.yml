@@ -17,5 +17,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LANGUAGE: Korean
-          MODEL: gpt-3.5-turbo
-# 출처: https://itchipmunk.tistory.com/592 [다람쥐의 스프링 개발 블로그:티스토리]
