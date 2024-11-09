@@ -1,9 +1,9 @@
-import RetroList from "../components/RetroList";
+import MarkdownEditor from "../components/MarkdownEditor";
 
 const Yunn = () => {
   return (
-    <RetroList />
+    <MarkdownEditor />
   )
-};
+}
 
 export default Yunn;
