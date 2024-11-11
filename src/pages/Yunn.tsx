@@ -1,8 +1,9 @@
-import MarkdownEditor from "../components/MarkdownEditor";
+import MarkdownViewer from "../components/MarkdownViewer";
 
 const Yunn = () => {
+  const mdText = '# 안녕하세요'
   return (
-    <MarkdownEditor />
+    <MarkdownViewer text={mdText} />
   )
 }
 
