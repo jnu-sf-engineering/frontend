@@ -6,9 +6,9 @@ interface ProjectListProps {
     width?: string
 }
 
-const ProjectList = () => {
+const ProjectList: React.FC<ProjectListProps> = ({ width }) => {
   return (
-    <ProjectListWrapper>
+    <ProjectListWrapper width={width}>
         <ProjectListHeader>
             <ProjectListTitle flex={1.2}>제목</ProjectListTitle>
             <ProjectListTitle flex={1}>스프린트 개수</ProjectListTitle>
