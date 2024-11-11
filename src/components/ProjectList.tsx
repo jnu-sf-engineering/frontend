@@ -46,7 +46,7 @@ const ProjectListHeader = styled.div`
 const ProjectListTitle = styled.div<{ flex: number }>`
     display: flex;
     text-align: center;
-    flex: ${({ flex }) => flex};
+    flex: ${({ flex }) => flex || 1};
     justify-content: center;
     align-items: center;
     font-weight: 500;
@@ -75,7 +75,7 @@ const ProjectListElement = styled.div`
 `
 
 const ProjectListItem = styled.div<{ flex: number }>`
-    flex: ${({ flex }) => flex};
+    flex: ${({ flex }) => flex || 1};
     text-align: center;
     padding: 2px 0;
 `
