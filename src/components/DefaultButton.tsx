@@ -5,12 +5,13 @@ interface ButtonProps {
   width?: string;
   height?: string;
   text?: string;
+  fontSize?: string;
 }
 
 const MainButton = styled.button<ButtonProps>`
   width: ${({ width }) => width || '10.3125rem'};
   height: ${({ height }) => height || '3.125rem'};
-  font-size: 1.3125rem;
+  font-size: ${({ fontSize }) => fontSize || '1.3125rem'};
   background-color: #88afe3;
   cursor: pointer;
   color: white;
@@ -25,9 +26,14 @@ const MainButton = styled.button<ButtonProps>`
   }
 `;
 
-const DefaultButton: React.FC<ButtonProps> = ({ width, height, text }) => {
+const DefaultButton: React.FC<ButtonProps> = ({
+  width,
+  height,
+  text,
+  fontSize,
+}) => {
   return (
-    <MainButton width={width} height={height}>
+    <MainButton width={width} height={height} fontSize={fontSize}>
       {text}
     </MainButton>
   );
