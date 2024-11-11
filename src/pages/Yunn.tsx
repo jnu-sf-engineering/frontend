@@ -1,9 +1,13 @@
 import MarkdownViewer from "../components/MarkdownViewer";
+import ProjectList from "../components/ProjectList";
 
 const Yunn = () => {
   const mdText = '# 안녕하세요'
   return (
-    <MarkdownViewer text={mdText} />
+    <>
+      <ProjectList />
+      <MarkdownViewer text={mdText} />
+    </>
   )
 }
 
