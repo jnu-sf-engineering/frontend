@@ -21,7 +21,6 @@ const RetroNoticeWrapper = styled.div<RetroListProps>`
 `;
 
 const RetroNoticeContent = styled.div`
-  border: 1px solid black;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
