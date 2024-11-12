@@ -1,10 +1,11 @@
-import RetroNoticeModal from '../components/RetroNoticeModal';
-import TaskCardInput from '../components/TaskCardInput';
+import RetroPickerModal from '../components/RetroPickerModal';
 
 const Klomachenko = () => {
   return (
     <div>
-      <RetroNoticeModal />
+      <RetroPickerModal retroType='KPT' />
+      <RetroPickerModal retroType='FourLs' />
+      <RetroPickerModal retroType='CSS' />
     </div>
   );
 };
