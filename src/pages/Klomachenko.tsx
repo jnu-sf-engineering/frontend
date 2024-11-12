@@ -3,7 +3,9 @@ import RetroPickerModal from '../components/RetroPickerModal';
 const Klomachenko = () => {
   return (
     <div>
-      <RetroPickerModal />
+      <RetroPickerModal retroType='KPT' />
+      <RetroPickerModal retroType='FourLs' />
+      <RetroPickerModal retroType='CSS' />
     </div>
   );
 };

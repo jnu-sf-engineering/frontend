@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import React from 'react';
 import DefaultButton from './DefaultButton';
+import { RETRO_TYPE } from '../constants/retroType';
 
 const Container = styled.div`
   width: 20rem;
@@ -26,7 +26,8 @@ const RetroTypeTitle = styled.h1`
 `;
 
 const RetroTypeSubTitle = styled.p`
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
   margin: 0;
   color: #a1a1a1;
 `;
@@ -57,19 +58,29 @@ const ButtonBox = styled.div`
   justify-content: center;
 `;
 
-const RetroPickerModal = () => {
+const RetroType = RETRO_TYPE;
+
+interface RetroPickerModalProps {
+  retroType: keyof typeof RetroType;
+}
+
+const RetroPickerModal: React.FC<RetroPickerModalProps> = ({ retroType }) => {
+  const { title, subTitle, content, buttonText } = RetroType[retroType];
+
   return (
     <Container>
       <RetroTypeBox>
-        <RetroTypeTitle>KPT</RetroTypeTitle>
-        <RetroTypeSubTitle>Keep-Problem-Try</RetroTypeSubTitle>
+        <RetroTypeTitle>{title}</RetroTypeTitle>
+        <RetroTypeSubTitle>{subTitle}</RetroTypeSubTitle>
       </RetroTypeBox>
-      <RetroTypeContentBox>
-        Keep(잘한점, 유지할 점), Problem(문제점, 개선이 필요한 점), Try(앞으로
-        시도해볼 점)으로 나누어 회고하는 방식
-      </RetroTypeContentBox>
+      <RetroTypeContentBox>{content}</RetroTypeContentBox>
       <ButtonBox>
-        <DefaultButton width='10.25rem' height='3.125rem' text='KPT Template' />
+        <DefaultButton
+          width='10.25rem'
+          height='3.125rem'
+          text={buttonText}
+          fontSize='1.3125rem'
+        />
       </ButtonBox>
     </Container>
   );
