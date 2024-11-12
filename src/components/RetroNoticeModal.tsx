@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 import React from 'react';
-import { RETRO_NOTICE_CONTENT } from '../constants/retroNoticeContent';
+import {
+  RETRO_NOTICE_CONTENT,
+  RETRO_NOTICE_TITLE,
+} from '../constants/retroNoticeContent';
 
 interface RetroListProps {
   width?: string;
@@ -49,7 +52,7 @@ const RetroNoticeTitle = styled.div`
 const RetroNoticeModal = () => {
   return (
     <>
-      <RetroNoticeTitle>스프린트 회고의 중요성</RetroNoticeTitle>
+      <RetroNoticeTitle>{RETRO_NOTICE_TITLE}</RetroNoticeTitle>
       <RetroNoticeWrapper>
         <RetroNoticeContent>
           {RETRO_NOTICE_CONTENT.map((content, index) => (
