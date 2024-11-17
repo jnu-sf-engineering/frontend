@@ -39,6 +39,8 @@ const NavWrapper = styled.div`
   align-items: center;
   color: #11235B;
   justify-content: space-between;
+  z-index: 10;
+  position: relative;
 `
 
 const LeftMenu = styled.div`
