@@ -1,7 +1,11 @@
 import styled from '@emotion/styled'
+import { useMutation } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
+import postAuthLogin from '../api/postAuthLogin'
+import { useNavigate } from 'react-router'
 
 const Login = () => {
+  const navigate = useNavigate()
 
   const [id, setId] = useState('')
   const [pw, setPw] = useState('')
@@ -16,20 +20,31 @@ const Login = () => {
   }, [])
 
   const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filteredValue = e.target.value.replace(/[^a-zA-Z]/g, ''); 
-    setId(filteredValue);
+    const filteredValue = e.target.value.replace(/[^a-zA-Z0-9]/g, '')
+    setId(filteredValue)
   }
 
   const handlePwChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filteredValue = e.target.value.replace(/[^a-zA-Z]/g, '');
-    setPw(filteredValue);
+    const filteredValue = e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/g, '')
+
+    setPw(filteredValue)
   }
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsCheck(e.target.checked)
   }
 
-  const handleLoginSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const postLogin = useMutation({
+    mutationFn: postAuthLogin,
+    // user_id에서 토큰 형식으로 바꾸기로 했으니 백엔드와 얘기해보고 추후 코드 변경 예정
+    // onSuccess: (data) => {
+    //   if (data.response.token) {
+    //     localStorage.setItem('token', data.response.token)
+    //   }
+    // }
+  })
+
+  const handleLoginSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
     if (isCheck) {
@@ -38,7 +53,15 @@ const Login = () => {
       localStorage.removeItem('savedId')
     }
 
-    // 로그인 통신 추가 필요
+    // 로그인 통신 코드
+    if (id !== null || pw !== null) {
+      await postLogin.mutateAsync({email: id, password: pw})
+    } else {
+      alert('올바른 아이디와 비밀번호를 입력해주세요.')
+    }
+    
+    await postLogin.mutateAsync({ email: id, password: pw })
+    navigate('/')
   }
 
   return (
@@ -109,6 +132,7 @@ const Button = styled.button`
   margin: 1rem;
   border: none;
   font-size: 0.95rem;
+  cursor: pointer;
 `
 
 export default Login
