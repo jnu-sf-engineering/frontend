@@ -31,7 +31,7 @@ const RetroList = () => {
 
 const RetroListWrapper = styled.div<RetroListProps>`
     border-radius: 0.8rem;
-    border: 0.1rem solid #D4D4DB;
+    border: 0.13rem solid #D4D4DB;
     display: flex;
     flex-direction: column;
     margin: 1rem;
