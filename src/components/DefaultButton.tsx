@@ -6,6 +6,7 @@ interface ButtonProps {
   height?: string;
   text?: string;
   fontSize?: string;
+  onClick?: () => void;
 }
 
 const MainButton = styled.button<ButtonProps>`
@@ -21,7 +22,7 @@ const MainButton = styled.button<ButtonProps>`
 
   &:hover {
     background-color: white;
-    color: black;
+    color: #88afe3;
     border: 0.1rem solid #88afe3;
   }
 `;
@@ -31,9 +32,10 @@ const DefaultButton: React.FC<ButtonProps> = ({
   height,
   text,
   fontSize,
+  onClick
 }) => {
   return (
-    <MainButton width={width} height={height} fontSize={fontSize}>
+    <MainButton width={width} height={height} fontSize={fontSize} onClick={onClick}>
       {text}
     </MainButton>
   );
