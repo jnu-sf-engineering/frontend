@@ -13,23 +13,49 @@ const RetroCreate = () => {
   const location = useLocation()
   const retroType = location.state?.retroType as keyof typeof RETRO_TEMPLATE || 'KPT'
   const [value, setValue] = useState(RETRO_TEMPLATE[retroType].content)
+  const [isCheck, setIsCheck] = useState(false)
+  const [error, setError] = useState(false)
 
   const handleMdChange = (newValue: string | undefined) => {
       setValue(newValue || '')
   }
 
-  const handleSubmit = () => {
-    console.log('회고록 작성 완료\n', value)
-    navigate('/retro')
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsCheck(e.target.checked)
+    if (e.target.checked) {
+      setError(false)
+    }
   }
+
+
+  const handleSubmit = () => {
+    if (!isCheck) {
+      setError(true)
+    } else {
+      console.log('회고록 작성 완료\n', value)
+      navigate('/retro')
+    }
+  }
+
 
   return (
     <RetroWrapper>
       <Title>회고록 작성 ({retroType})</Title>
       <Container>
         <MarkdownEditor value={value} onChange={handleMdChange} />
+        <Options>
+          <OptionLine>
+            <Checkbox type='checkbox' checked={isCheck} onChange={handleCheckboxChange} />
+            <CheckboxLabel>회고 내용을 외부에 유출하지 않을 것임에 동의합니다</CheckboxLabel>
+          </OptionLine>
+          <OptionLine>
+            {error && (
+              <ErrorMessage>회고 내용 비밀 유지 서약에 동의해주세요</ErrorMessage>
+            )}
+          </OptionLine>
+        </Options>
         <BtnContainer>
-          <DefaultButton text='작성 완료' fontSize='1.1rem' width='7rem' height='2.7rem' onClick={handleSubmit} />
+          <DefaultButton text='작성 완료' fontSize='1.1rem' width='8rem' height='2.7rem' onClick={handleSubmit} />
         </BtnContainer>
       </Container>
     </RetroWrapper>
@@ -69,6 +95,41 @@ const Container = styled.div`
 
 const BtnContainer = styled.div`
   margin-top: 1.5rem;
+`
+
+const Options = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 78rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+`
+
+const OptionLine = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`
+
+const Checkbox = styled.input`
+  margin-right: 0.7rem;
+  width: 1rem;
+`
+
+const CheckboxLabel = styled.label`
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+`
+
+const ErrorMessage = styled.div`
+  color: #E52B2B;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 78rem;
+  margin-right: 6.3rem;
 `
 
 export default RetroCreate
