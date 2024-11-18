@@ -1,28 +1,34 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-interface RetroSummaryProps {
+interface RetroSummaryDesignProps {
+  width?: string
+}
+
+interface RetroSummaryContentProps {
   content: string
 }
 
-const RetroSummary = ({ content }: RetroSummaryProps) => {
+type RetroSummaryProps = RetroSummaryDesignProps & RetroSummaryContentProps
+
+const RetroSummary = ({ content, width }: RetroSummaryProps) => {
   return (
     <>
       <RetroNoticeTitle>회고 요약</RetroNoticeTitle>
-      <RetroNoticeWrapper>
+      <RetroNoticeWrapper width={width}>
         <RetroNoticeContent>{content}</RetroNoticeContent>
       </RetroNoticeWrapper>
     </>
   );
 };
 
-const RetroNoticeWrapper = styled.div`
+const RetroNoticeWrapper = styled.div<RetroSummaryDesignProps>`
   border-radius: 0.8rem;
-  border: 0.13rem solid #d4d4db;
+  border: 0.13rem solid #BEBEBE;
   display: flex;
   flex-direction: column;
   margin: 1.5rem;
-  width: 80rem;
+  width: ${({ width }) => width || '80rem'};
   position: relative;
 `;
 

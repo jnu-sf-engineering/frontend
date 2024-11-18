@@ -21,10 +21,11 @@ const RetroWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100vh - 13rem);
+  height: calc(100vh - 5rem);
   position: relative;
   padding: 6rem 7.5rem;
   box-sizing: border-box;
+  overflow-y: auto;
 `
 
 const Title = styled.div`

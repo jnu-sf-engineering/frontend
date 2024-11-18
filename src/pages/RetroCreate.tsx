@@ -33,6 +33,7 @@ const RetroCreate = () => {
       setError(true)
     } else {
       console.log('회고록 작성 완료\n', value)
+      // 작성완료 버튼 클릭시 통신 코드 추가 예정 (회고 요약 기능도)
       navigate('/retro')
     }
   }
@@ -66,11 +67,11 @@ const RetroWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100vh - 13rem);
+  height: calc(100vh - 5rem);
   position: relative;
   padding: 6rem 7.5rem;
   box-sizing: border-box;
-  margin-bottom: 20rem;
+  overflow-y: auto;
 `
 
 const Title = styled.div`
@@ -90,7 +91,6 @@ const Container = styled.div`
   width: 100%;
   position: relative;
   line-height: 1.85rem;
-  margin-bottom: 3rem;
 `
 
 const BtnContainer = styled.div`
