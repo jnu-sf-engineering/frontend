@@ -7,6 +7,8 @@ import Retro from './pages/Retro';
 import LastSprint from './pages/LastSprint';
 import Login from './pages/Login';
 import NavBar from './components/NavBar';
+import RetroCreate from './pages/RetroCreate';
+import RetroDetail from './pages/RetroDetail';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path='/project' element={<Project />} />
           <Route path='/retro' element={<Retro />} />
           <Route path='/lastsprint' element={<LastSprint />} />
+          <Route path='/retrocreate' element={<RetroCreate />} />
+          <Route path='/retrodetail' element={<RetroDetail />} />
         </Routes>
       </BrowserRouter>
     </>
