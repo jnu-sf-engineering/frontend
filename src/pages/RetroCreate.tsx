@@ -2,16 +2,17 @@ import styled from '@emotion/styled'
 import MarkdownEditor from '../components/MarkdownEditor'
 import { useState } from 'react'
 import DefaultButton from '../components/DefaultButton'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
+import { RETRO_TEMPLATE } from '../constants/retroTemplate'
 
 const RetroCreate = () => {
 
   const navigate = useNavigate()
 
   // 이전 화면(회고록 선택 화면)에서 navigate시 회고록 유형 이름 넘겨받도록 하기
-  const retroType = 'KPT'
-
-  const [value, setValue] = useState('')
+  const location = useLocation()
+  const retroType = location.state?.retroType as keyof typeof RETRO_TEMPLATE || 'KPT'
+  const [value, setValue] = useState(RETRO_TEMPLATE[retroType].content)
 
   const handleMdChange = (newValue: string | undefined) => {
       setValue(newValue || '')

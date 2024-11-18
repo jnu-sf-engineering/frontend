@@ -5,6 +5,7 @@ import RetroSummary from '../components/RetroSummary'
 const Retro = () => {
 
   const summaryText = '회고 내용입니다.\n회고 요약 3줄 내용입니다.\n회고 요약 내용입니다.'
+
   return (
     <RetroWrapper>
       <Title>회고 리스트</Title>
