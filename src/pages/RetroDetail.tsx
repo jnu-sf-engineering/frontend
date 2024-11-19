@@ -1,17 +1,22 @@
 import styled from '@emotion/styled'
-import RetroList from '../components/RetroList'
+import React from 'react'
+import MarkdownViewer from '../components/MarkdownViewer'
+import { RETRO_TEXT_KPT } from '../mocks/RetroTextMock'
 import RetroSummary from '../components/RetroSummary'
 
-const Retro = () => {
+const RetroDetail = () => {
 
+  // 추후 통신 연결시 mdText를 회고록 내용으로 대체 예정
+  const mdText = RETRO_TEXT_KPT
   const summaryText = '회고 내용입니다.\n회고 요약 3줄 내용입니다.\n회고 요약 내용입니다.'
 
   return (
     <RetroWrapper>
-      <Title>회고 리스트</Title>
+      <Title>회고록 상세보기</Title>
       <Container>
-        <RetroSummary content={summaryText} />
-        <RetroList />
+        <RetroSummary content={summaryText} width='54.5rem' />
+        <Space />
+        <MarkdownViewer text={mdText} />
       </Container>
     </RetroWrapper>
   )
@@ -23,8 +28,9 @@ const RetroWrapper = styled.div`
   width: 100%;
   height: calc(100vh - 5rem);
   position: relative;
-  padding: 6rem 7.5rem;
+  padding: 6rem 20rem;
   box-sizing: border-box;
+  margin-bottom: 3rem;
   overflow-y: auto;
 `
 
@@ -45,5 +51,12 @@ const Container = styled.div`
   width: 100%;
   position: relative;
   line-height: 1.85rem;
+  margin-top: 0.8rem;
+  box-sizing: border-box;
 `
-export default Retro
+
+const Space = styled.div`
+  margin: 15px;
+`
+
+export default RetroDetail

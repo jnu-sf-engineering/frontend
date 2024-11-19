@@ -66,6 +66,7 @@ const Login = () => {
 
   return (
     <LoginWrapper>
+        <Logo>momentum</Logo>
         <Title>로그인</Title>
         <Input type='text' placeholder='아이디' value={id} onChange={handleIdChange} />
         <Input type='password' placeholder='비밀번호' required value={pw} onChange={handlePwChange} />
@@ -84,7 +85,14 @@ const LoginWrapper = styled.div`
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: calc(100vh - 13rem);
+    height: calc(100vh - 3rem);
+`
+
+const Logo = styled.div`
+  font-size: 2.5rem;
+  color: #54689F;
+  font-weight: 700;
+  margin-bottom: 2rem;
 `
 
 const Title = styled.div`

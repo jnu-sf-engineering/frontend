@@ -16,6 +16,7 @@ const MarkdownViewer: React.FC<MdViewerProps> = ({text}) => {
 
 const MdViewer = styled.div`
   padding: 20px;
+  width: 100%;
 `
 
 export default MarkdownViewer
