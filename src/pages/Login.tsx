@@ -20,7 +20,7 @@ const Login = () => {
   }, [])
 
   const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filteredValue = e.target.value.replace(/[^a-zA-Z0-9]/g, '')
+    const filteredValue = e.target.value.replace(/[^a-zA-Z0-9@.]/g, '');
     setId(filteredValue)
   }
 
@@ -37,11 +37,11 @@ const Login = () => {
   const postLogin = useMutation({
     mutationFn: postAuthLogin,
     // user_id에서 토큰 형식으로 바꾸기로 했으니 백엔드와 얘기해보고 추후 코드 변경 예정
-    // onSuccess: (data) => {
-    //   if (data.response.token) {
-    //     localStorage.setItem('token', data.response.token)
-    //   }
-    // }
+    onSuccess: (data) => {
+      if (data.response.accessToken) {
+        localStorage.setItem('token', data.response.accessToken)
+      }
+    }
   })
 
   const handleLoginSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -75,6 +75,7 @@ const Login = () => {
           <CheckboxLabel>아이디 저장</CheckboxLabel>
         </Options>
         <Button onClick={handleLoginSubmit}>로그인</Button>
+        <Join>아직 계정이 없으신가요?  <JoinBold>회원가입</JoinBold></Join>
     </LoginWrapper>
   )
 }
@@ -141,6 +142,17 @@ const Button = styled.button`
   border: none;
   font-size: 0.95rem;
   cursor: pointer;
+`
+
+const Join = styled.div`
+  margin-top: 2.3rem;
+  color: #515151;
+  white-space: pre;
+`
+
+const JoinBold = styled.div`
+  text-decoration: underline;
+  display: inline;
 `
 
 export default Login
