@@ -43,7 +43,7 @@ const Join = () => {
 
 
     // // 회원가입 통신 코드
-    // if (id !== null || pw !== null) {
+    // if (nickname !== null || id !== null || pw !== null || pwCheck !== null) {
     //   await postLogin.mutateAsync({email: id, password: pw})
     // } else {
     //   alert('올바른 아이디와 비밀번호를 입력해주세요.')
@@ -107,6 +107,7 @@ const Logo = styled.div`
   font-size: 2.5rem;
   color: #54689F;
   font-weight: 700;
+  margin-bottom: 0.5rem;
 `
 
 const Title = styled.div`
