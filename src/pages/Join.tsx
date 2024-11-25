@@ -1,24 +1,32 @@
 import styled from '@emotion/styled'
+import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import postRegister from '../api/postRegister'
 
 const Join = () => {
 
+  const navigate = useNavigate()
+
   const [nickname, setNickname] = useState('')
-  const [id, setId] = useState('')
+  const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
   const [pwCheck, setPwCheck] = useState('')
   const [idError, setIdError] = useState('')
   const [isPwVisible, setIsPwVisible] = useState(false)
   const [isPwCheckVisible, setIsPwCheckVisible] = useState(false)
 
+  const postJoin = useMutation({
+    mutationFn: postRegister,
+  })
+
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value)
   }
 
-  const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^a-zA-Z0-9@.]/g, '');
-    setId(value)
+    setEmail(value)
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(value)) {
@@ -42,15 +50,13 @@ const Join = () => {
     e.preventDefault()
 
 
-    // // 회원가입 통신 코드
-    // if (nickname !== null || id !== null || pw !== null || pwCheck !== null) {
-    //   await postLogin.mutateAsync({email: id, password: pw})
-    // } else {
-    //   alert('올바른 아이디와 비밀번호를 입력해주세요.')
-    // }
-    
-    // await postLogin.mutateAsync({ email: id, password: pw })
-    // navigate('/')
+    // 회원가입 통신 코드
+    if (nickname !== null || email !== null || pw !== null || pwCheck !== null) {
+      await postJoin.mutateAsync({email, password: pw, nickname})
+    } else {
+      alert('올바른 아이디와 비밀번호를 입력해주세요.')
+    }
+    navigate('/')
   }
 
   return (
@@ -64,7 +70,7 @@ const Join = () => {
       <IdWrapper>
         <Line>
           <Label>이메일</Label>
-          <Input type='text' placeholder='이메일을 입력하세요' value={id} onChange={handleIdChange} />
+          <Input type='text' placeholder='이메일을 입력하세요' value={email} onChange={handleEmailChange} />
         </Line>
         {idError && <ErrorMessage>{idError}</ErrorMessage>}
       </IdWrapper>
