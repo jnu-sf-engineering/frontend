@@ -7,6 +7,7 @@ const NavBar = () => {
 
   const [isLogin, setIsLogin] = useState(false)
   const accessToken = localStorage.getItem('token')
+  const nickname = localStorage.getItem('nickname')
 
   useEffect(() => {
     if (accessToken) {
@@ -18,13 +19,13 @@ const NavBar = () => {
   return (
     <NavWrapper>
       <LeftMenu>
-        <Logo src={LogoImg} width={60}/>
+        <StyledLink to={'/'}><Logo src={LogoImg} width={60}/></StyledLink>
         <StyledLink to='/project'><NavItem>프로젝트</NavItem></StyledLink>
         <StyledLink to='/retro'><NavItem>회고록</NavItem></StyledLink>
         <StyledLink to='/lastsprint'><NavItem>지난 스프린트</NavItem></StyledLink>
       </LeftMenu>
       <RightMenu>
-        {isLogin ? <StyledLink to='mypage'>seoyun님</StyledLink> : <StyledLink to='login'>로그인 / 회원가입</StyledLink>}
+        {isLogin ? <StyledLink to='mypage'>{nickname} 님</StyledLink> : <StyledLink to='login'>로그인 / 회원가입</StyledLink>}
       </RightMenu>
     </NavWrapper>
   )

@@ -43,6 +43,9 @@ const Login = () => {
       if (data.response.accessToken) {
         localStorage.setItem('token', data.response.accessToken)
       }
+      if (data.response.userID) {
+        localStorage.setItem('nickname', data.response.userID)
+      }
     }
   })
 

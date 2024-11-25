@@ -56,7 +56,8 @@ const Join = () => {
     } else {
       alert('올바른 아이디와 비밀번호를 입력해주세요.')
     }
-    navigate('/')
+    alert('회원가입에 성공하였습니다! 로그인해주세요')
+    navigate('/login')
   }
 
   return (
