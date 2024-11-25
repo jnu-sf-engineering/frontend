@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
 import postAuthLogin from '../api/postAuthLogin'
 import { useNavigate } from 'react-router'
+import { Link } from 'react-router-dom'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -10,6 +11,7 @@ const Login = () => {
   const [id, setId] = useState('')
   const [pw, setPw] = useState('')
   const [isCheck, setIsCheck] = useState(false)
+  const [isPwVisible, setIsPwVisible] = useState(false)
 
   useEffect(() => {
     const savedId = localStorage.getItem('savedId')
@@ -20,7 +22,7 @@ const Login = () => {
   }, [])
 
   const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filteredValue = e.target.value.replace(/[^a-zA-Z0-9]/g, '')
+    const filteredValue = e.target.value.replace(/[^a-zA-Z0-9@.]/g, '');
     setId(filteredValue)
   }
 
@@ -37,11 +39,11 @@ const Login = () => {
   const postLogin = useMutation({
     mutationFn: postAuthLogin,
     // user_id에서 토큰 형식으로 바꾸기로 했으니 백엔드와 얘기해보고 추후 코드 변경 예정
-    // onSuccess: (data) => {
-    //   if (data.response.token) {
-    //     localStorage.setItem('token', data.response.token)
-    //   }
-    // }
+    onSuccess: (data) => {
+      if (data.response.accessToken) {
+        localStorage.setItem('token', data.response.accessToken)
+      }
+    }
   })
 
   const handleLoginSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -68,13 +70,19 @@ const Login = () => {
     <LoginWrapper>
         <Logo>momentum</Logo>
         <Title>로그인</Title>
-        <Input type='text' placeholder='아이디' value={id} onChange={handleIdChange} />
-        <Input type='password' placeholder='비밀번호' required value={pw} onChange={handlePwChange} />
+        <Input type='text' placeholder='이메일을 입력하세요' value={id} onChange={handleIdChange} />
+        <PwWrapper>
+          <Input type={isPwVisible ? 'text' : 'password'} placeholder='비밀번호를 입력하세요' required value={pw} onChange={handlePwChange} />
+          <EyeIcon className='material-symbols-outlined' onClick={() => setIsPwVisible((prev) => !prev)}>
+            {isPwVisible ? 'visibility_off' : 'visibility'}
+          </EyeIcon>
+        </PwWrapper>
         <Options>
           <Checkbox type='checkbox' checked={isCheck} onChange={handleCheckboxChange} />
           <CheckboxLabel>아이디 저장</CheckboxLabel>
         </Options>
         <Button onClick={handleLoginSubmit}>로그인</Button>
+        <Join>아직 계정이 없으신가요?  <StyledLink to={'/join'}>회원가입</StyledLink></Join>
     </LoginWrapper>
   )
 }
@@ -92,7 +100,7 @@ const Logo = styled.div`
   font-size: 2.5rem;
   color: #54689F;
   font-weight: 700;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `
 
 const Title = styled.div`
@@ -100,14 +108,29 @@ const Title = styled.div`
   padding: 2rem;
   color: #484848;
   font-weight: 600;
+  margin-bottom: 1rem;
 `
 
 const Input = styled.input`
   width: 24.8rem;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 0;
   outline: none;
   padding: 0.6rem 1rem;
   box-sizing: border-box;
+`
+
+const PwWrapper = styled.div`
+  position: relative;
+`
+
+const EyeIcon = styled.div`
+  display: flex;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  color: #6F6F6F;
+  font-weight: 200;
+  cursor: pointer;
 `
 
 const Options = styled.div`
@@ -115,7 +138,7 @@ const Options = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   width: 25rem;
-  padding-top: 0.3rem;
+  padding-top: 0.5rem;
   padding-left: 0.2rem;
 `
 const Checkbox = styled.input`
@@ -137,10 +160,23 @@ const Button = styled.button`
   width: 25rem;
   border-radius: 0.5rem;
   height: 2.5rem;
-  margin: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
   border: none;
   font-size: 0.95rem;
   cursor: pointer;
+`
+
+const Join = styled.div`
+  margin-top: 2.3rem;
+  color: #515151;
+  white-space: pre;
+`
+
+const StyledLink = styled(Link)`
+  text-decoration: underline;
+  display: inline;
+  color: inherit;
 `
 
 export default Login
