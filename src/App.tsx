@@ -10,9 +10,9 @@ import NavBar from './components/NavBar';
 import RetroCreate from './pages/RetroCreate';
 import RetroDetail from './pages/RetroDetail';
 import Join from './pages/Join';
+import RetroPick from './pages/RetroPick';
 
 function App() {
-
   return (
     <>
       <BrowserRouter>
@@ -23,23 +23,26 @@ function App() {
 }
 
 function AppRoutes() {
-  const location = useLocation()
+  const location = useLocation();
   return (
     <>
-      {location.pathname !== '/login' && location.pathname !== '/join' && <NavBar />}
+      {location.pathname !== '/login' && location.pathname !== '/join' && (
+        <NavBar />
+      )}
       <Routes>
         <Route path='/yunn' element={<Yunn />} />
         <Route path='/min' element={<Klomachenko />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/join' element={<Join />} /> 
+        <Route path='/join' element={<Join />} />
         <Route path='/project' element={<Project />} />
         <Route path='/retro' element={<Retro />} />
         <Route path='/lastsprint' element={<LastSprint />} />
         <Route path='/retrocreate' element={<RetroCreate />} />
         <Route path='/retrodetail' element={<RetroDetail />} />
+        <Route path='/retropick' element={<RetroPick />} />
       </Routes>
     </>
-  )
+  );
 }
 
 export default App;
