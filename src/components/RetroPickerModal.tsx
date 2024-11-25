@@ -4,7 +4,7 @@ import { RETRO_TYPE } from '../constants/retroType';
 
 const Container = styled.div`
   width: 20rem;
-  height: 22.5rem;
+  height: 25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -17,6 +17,7 @@ const RetroTypeBox = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  gap: 1rem;
 `;
 
 const RetroTypeTitle = styled.h1`
@@ -35,7 +36,7 @@ const RetroTypeSubTitle = styled.p`
 const RetroTypeContentBox = styled.div`
   box-sizing: border-box;
   width: 100%;
-  height: 9.375rem;
+  height: 13rem;
   background-color: white;
   color: #505050;
   border: 0.1875rem solid #88afe3;
@@ -48,6 +49,7 @@ const RetroTypeContentBox = styled.div`
   font-weight: 600;
   align-items: center;
   justify-content: center;
+  margin-top: 2rem;
 `;
 
 const ButtonBox = styled.div`

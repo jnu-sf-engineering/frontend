@@ -39,7 +39,7 @@ const RetroNoticeTitle = styled.div`
   position: absolute;
   background-color: white;
   z-index: 1;
-  left: 50px;
+  left: 200px;
   top: 0px;
   font-size: 1.75rem;
   align-items: center;
