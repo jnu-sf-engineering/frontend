@@ -80,7 +80,7 @@ const Join = () => {
     if (Object.values(errors).some((msg) => msg)) return
 
     await postJoin.mutateAsync({email, password: pw, nickname})
-    alert('회원가입에 성공하였습니다!s 로그인해주세요')
+    alert('회원가입에 성공하였습니다! 로그인해주세요')
     navigate('/login')
   }
 
