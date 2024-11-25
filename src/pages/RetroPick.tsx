@@ -52,10 +52,12 @@ const Container = styled.div`
   position: relative;
   line-height: 1.85rem;
   gap: 4rem;
+  border: 3px solid black;
 `;
 
 const RetroContainer = styled.div`
   display: flex;
   width: 72.125rem;
   justify-content: space-between;
+  border: 3px solid black;
 `;
