@@ -11,6 +11,7 @@ import RetroCreate from './pages/RetroCreate';
 import RetroDetail from './pages/RetroDetail';
 import Join from './pages/Join';
 import RetroPick from './pages/RetroPick';
+import CompleteSprint from './pages/CompleteSprint';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function AppRoutes() {
         <Route path='/retrocreate' element={<RetroCreate />} />
         <Route path='/retrodetail' element={<RetroDetail />} />
         <Route path='/retropick' element={<RetroPick />} />
+        <Route path='/completesprint' element={<CompleteSprint />} />
       </Routes>
     </>
   );
