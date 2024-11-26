@@ -38,13 +38,27 @@ const Login = () => {
 
   const postLogin = useMutation({
     mutationFn: postAuthLogin,
-    // user_id에서 토큰 형식으로 바꾸기로 했으니 백엔드와 얘기해보고 추후 코드 변경 예정
     onSuccess: (data) => {
       if (data.response.accessToken) {
         localStorage.setItem('token', data.response.accessToken)
       }
       if (data.response.userID) {
         localStorage.setItem('nickname', data.response.userID)
+      }
+      navigate('/')
+    },
+    onError: (error: any) => {
+      if (error.response) {
+        const { status } = error.response
+        if (status === 400) {
+          alert('아이디 또는 비밀번호가 잘못되었습니다. 다시 시도해주세요')
+        } else if (status === 404) {
+          alert('존재하지 않는 이메일입니다. 회원가입을 진행해주세요.')
+        } else if (status === 422) {
+          alert('이메일 형식이 올바르지 않습니다.')
+        } else {
+          alert('서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.')
+        }
       }
     }
   })
@@ -58,15 +72,18 @@ const Login = () => {
       localStorage.removeItem('savedId')
     }
 
-    // 로그인 통신 코드
-    if (id !== null || pw !== null) {
-      await postLogin.mutateAsync({email: id, password: pw})
-    } else {
-      alert('올바른 아이디와 비밀번호를 입력해주세요.')
+    if (!id || !pw) {
+      alert('이메일과 비밀번호를 모두 입력해주세요.')
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(id)) {
+      alert('올바른 이메일 형식으로 입력해주세요.')
+      return
     }
     
-    await postLogin.mutateAsync({ email: id, password: pw })
-    navigate('/')
+    await postLogin.mutate({ email: id, password: pw })
   }
 
   return (
