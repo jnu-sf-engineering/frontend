@@ -12,6 +12,7 @@ import RetroDetail from './pages/RetroDetail';
 import Join from './pages/Join';
 import RetroPick from './pages/RetroPick';
 import CompleteSprint from './pages/CompleteSprint';
+import Kanban from './pages/Kanban';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function AppRoutes() {
         <Route path='/retrodetail' element={<RetroDetail />} />
         <Route path='/retropick' element={<RetroPick />} />
         <Route path='/completesprint' element={<CompleteSprint />} />
+        <Route path='/kanban' element={<Kanban />} />
       </Routes>
     </>
   );
