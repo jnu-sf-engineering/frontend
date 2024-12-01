@@ -1,6 +1,5 @@
 import './App.css';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
-import Yunn from './pages/Yunn';
+import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Klomachenko from './pages/Klomachenko';
 import Project from './pages/Project';
 import Retro from './pages/Retro';
@@ -12,6 +11,8 @@ import RetroDetail from './pages/RetroDetail';
 import Join from './pages/Join';
 import RetroPick from './pages/RetroPick';
 import CompleteSprint from './pages/CompleteSprint';
+import { useEffect } from 'react';
+import { setupAxiosInterceptor } from './api/axiosInstance';
 
 function App() {
   return (
@@ -25,13 +26,18 @@ function App() {
 
 function AppRoutes() {
   const location = useLocation();
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    setupAxiosInterceptor(navigate)
+  }, [navigate])
+
   return (
     <>
       {location.pathname !== '/login' && location.pathname !== '/join' && (
         <NavBar />
       )}
       <Routes>
-        <Route path='/yunn' element={<Yunn />} />
         <Route path='/min' element={<Klomachenko />} />
         <Route path='/login' element={<Login />} />
         <Route path='/join' element={<Join />} />

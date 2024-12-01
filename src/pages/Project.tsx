@@ -3,10 +3,19 @@ import React, { useState } from 'react'
 import DefaultButton from '../components/DefaultButton'
 import ProjectList from '../components/ProjectList'
 import ProjectCreateModal from '../components/ProjectCreateModal'
+import { useQuery } from '@tanstack/react-query'
+import getProject from '../api/getProject'
 
 const Project = () => {
 
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['project'],
+    queryFn: getProject,
+    retry: 1
+  })
+
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const errorText = '프로젝트가 존재하지 않습니다\n프로젝트를 생성해주세요'
 
   const handleCreateProject = () => {
     setIsModalOpen(true)
@@ -17,6 +26,14 @@ const Project = () => {
     setIsModalOpen(false)
   }
 
+  if (isLoading) {
+    <p>Loading</p>
+  }
+
+  if (isError || !data || !data.response) {
+    <p>Error</p>
+  }
+
   return (
     <ProjectWrapper>
       <Title>내 프로젝트</Title>
@@ -24,7 +41,14 @@ const Project = () => {
         <BtnContainer>
           <DefaultButton text='프로젝트 생성하기' width='9.2rem' height='2.5rem' fontSize='1rem' onClick={handleCreateProject} />
         </BtnContainer>
-        <ProjectList />
+        {data
+          ? <ProjectList projects={data} />
+          : <ErrorWrapper>
+              <ErrorIcon className='material-symbols-outlined'>error</ErrorIcon>
+              <Error>{errorText}</Error>
+            </ErrorWrapper>
+        }
+        
       </Container>
       <ProjectCreateModal isOpen={isModalOpen} onClose={handleModalClose} />
     </ProjectWrapper>
@@ -65,6 +89,31 @@ const BtnContainer = styled.div`
   justify-content: flex-end;
   align-self: flex-end;
   margin-bottom: 0.7rem;
+`
+
+const ErrorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(100vh - 30rem);
+`
+
+const ErrorIcon = styled.div`
+  color: #6A7AAC;
+  margin-bottom: 1.4rem;
+  font-size: 2.5rem;
+  font-weight: 300;
+`
+
+const Error = styled.div`
+  white-space: pre-line;
+  text-align: center;
+  line-height: 1.9rem;
+  color: #6A7AAC;
+  font-size: 1.15rem;
+  
 `
 
 export default Project
