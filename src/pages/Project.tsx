@@ -41,14 +41,15 @@ const Project = () => {
         <BtnContainer>
           <DefaultButton text='프로젝트 생성하기' width='9.2rem' height='2.5rem' fontSize='1rem' onClick={handleCreateProject} />
         </BtnContainer>
-        {data
-          ? <ProjectList projects={data} />
-          : <ErrorWrapper>
-              <ErrorIcon className='material-symbols-outlined'>error</ErrorIcon>
-              <Error>{errorText}</Error>
-            </ErrorWrapper>
-        }
-        
+        <DataContainer>
+          {data
+            ? <ProjectList projects={data.response} />
+            : <ErrorWrapper>
+                <ErrorIcon className='material-symbols-outlined'>error</ErrorIcon>
+                <Error>{errorText}</Error>
+              </ErrorWrapper>
+          }
+        </DataContainer>
       </Container>
       <ProjectCreateModal isOpen={isModalOpen} onClose={handleModalClose} />
     </ProjectWrapper>
@@ -63,6 +64,7 @@ const ProjectWrapper = styled.div`
   position: relative;
   padding: 6rem 7.5rem;
   box-sizing: border-box;
+  position: relative;
 `
 
 const Title = styled.div`
@@ -85,10 +87,16 @@ const Container = styled.div`
 
 const BtnContainer = styled.div`
   display: flex;
-  width: 100%
-  justify-content: flex-end;
   align-self: flex-end;
   margin-bottom: 0.7rem;
+  position: absolute;
+  left: 60.5rem;
+  top: 0.1rem;
+`
+
+const DataContainer = styled.div`
+  position: absolute;
+  top: 3rem;
 `
 
 const ErrorWrapper = styled.div`

@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import styled from '@emotion/styled'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import postProject from '../api/postProject'
 
 interface ModalProps {
   isOpen: boolean
@@ -8,18 +10,39 @@ interface ModalProps {
 }
 
 const ProjectCreateModal: React.FC<ModalProps> = ({ isOpen, onClose}) => {
+
+  const queryClient = useQueryClient()
+  const [newProject, setNewProject] = useState('')
+  const manager = localStorage.getItem('nickname')
+
+  const mutationPostProject = useMutation({
+    mutationFn: postProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['project'] })
+    }
+  })
+
   if (!isOpen) return null
 
   const modalRoot = document.getElementById('modal')
   if (!modalRoot) return null
 
+  const handleConfirm = async () => {
+    mutationPostProject.mutate({ projectName: newProject, manager: manager || '' })
+    onClose()
+  }
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewProject(event?.target.value)
+  }
+
   return ReactDOM.createPortal(
     <ModalBackground onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <ModalTitle>프로젝트 생성</ModalTitle>
-        <ModalInput placeholder='프로젝트 제목을 입력하세요' />
+        <ModalInput value={newProject} onChange={handleInputChange} placeholder='프로젝트 제목을 입력하세요' />
         <ModalBtnContainer>
-            <DoneBtn onClick={onClose}>확인</DoneBtn>
+            <DoneBtn onClick={handleConfirm}>확인</DoneBtn>
         </ModalBtnContainer>
       </ModalContainer>
     </ModalBackground>,
