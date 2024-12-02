@@ -3,6 +3,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import React, { useState } from 'react'
 import putProject from '../api/putProject'
 import ProjectCreateModal from './ProjectCreateModal'
+import deleteProject from '../api/deleteProject'
+import ModalAlert from './ModalAlert'
 
 interface ProjectDesign {
   width?: string
@@ -24,10 +26,12 @@ const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
 
   const queryClient = useQueryClient()
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [newValue, setNewValue] = useState('')
   const manager = localStorage.getItem('nickname')
   const [editId, setEditId] = useState<number | null>(null)
   const [deleteId, setDeleteId] = useState<number | null>(null)
+  const [deleteName, setDeleteName] = useState<string | null>(null)
 
   const mutationPutProject = useMutation({
     mutationFn: putProject,
@@ -37,9 +41,20 @@ const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
     }
   })
 
+  const mutationDeleteProject = useMutation({
+    mutationFn: deleteProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['project'] })
+    }
+  })
+
   const handleEdit = (projectId: number) => {
     setEditId(projectId)
     setIsEditModalOpen(true)
+  }
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewValue(event?.target.value)
   }
 
   const handleConfirmEdit = () => {
@@ -49,8 +64,18 @@ const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
     mutationPutProject.mutate({ projectId: editId, projectName: newValue, manager: manager || '' })
   }
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewValue(event?.target.value)
+  const handleDelete = (projectId: number, projectName: string) => {
+    setDeleteId(projectId)
+    setDeleteName(projectName)
+    setIsDeleteModalOpen(true)
+  }
+
+  const handleConfirmDelete = () => {
+    if (deleteId === null) {
+      return
+    }
+    mutationDeleteProject.mutate({ projectId: deleteId })
+    setIsDeleteModalOpen(false)
   }
 
 
@@ -68,7 +93,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
               {item.projectName}
               <ProjectItemOption className='project-item-option'>
                 <ProjectModifyIcon onClick={() => handleEdit(item.projectId)} className='material-symbols-outlined'>edit</ProjectModifyIcon>
-                <ProjectDeleteIcon className='material-symbols-outlined'>delete</ProjectDeleteIcon>
+                <ProjectDeleteIcon onClick={() => handleDelete(item.projectId, item.projectName)} className='material-symbols-outlined'>delete</ProjectDeleteIcon>
               </ProjectItemOption>
             </ProjectListItem>
             <ProjectListItem flex={1}>{item.sprintCount || 0}개</ProjectListItem>
@@ -80,6 +105,8 @@ const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
         <ProjectCreateModal title='프로젝트 수정' isOpen={isEditModalOpen} onClose={() => {setIsEditModalOpen(false); setEditId(null);}} onConfirm={handleConfirmEdit} value={newValue} onChange={handleInputChange}
         />
       )}
+      <ModalAlert text={`'${deleteName}' 프로젝트를 삭제하시겠습니까?\n삭제된 프로젝트는 복구되지 않습니다.`} isOpen={isDeleteModalOpen} onClose={() => {setIsDeleteModalOpen(false); setDeleteId(null);}} onConfirm={handleConfirmDelete} />
+
     </ProjectListWrapper>
     
   )

@@ -1,7 +1,11 @@
 import axiosInstance from "./axiosInstance"
 
-const deleteProject = async () => {
-  const response = await axiosInstance.delete(`/project/{projectId}`)
+interface deleteProjectProps {
+  projectId: number
+}
+
+const deleteProject = async ({ projectId }: deleteProjectProps ) => {
+  const response = await axiosInstance.delete(`/project/${projectId}`)
   return response.data
 }
 
