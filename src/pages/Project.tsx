@@ -3,10 +3,13 @@ import React, { useState } from 'react'
 import DefaultButton from '../components/DefaultButton'
 import ProjectList from '../components/ProjectList'
 import ProjectCreateModal from '../components/ProjectCreateModal'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import getProject from '../api/getProject'
+import postProject from '../api/postProject'
 
 const Project = () => {
+
+  const queryClient = useQueryClient()
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['project'],
@@ -15,12 +18,33 @@ const Project = () => {
   })
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [newProject, setNewProject] = useState('')
+  const manager = localStorage.getItem('nickname')
+
   const errorText = '프로젝트가 존재하지 않습니다\n프로젝트를 생성해주세요'
+
+  const mutationPostProject = useMutation({
+    mutationFn: postProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['project'] })
+    }
+  })
 
   const handleCreateProject = () => {
     setIsModalOpen(true)
     console.log('모달창 열림')
   }
+
+  const handleConfirmProject = () => {
+    if (newProject.trim() === '') return
+    mutationPostProject.mutate({ projectName: newProject, manager: manager || '' })
+    handleModalClose()
+  }
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewProject(event?.target.value)
+  }
+
 
   const handleModalClose = () => {
     setIsModalOpen(false)
@@ -51,7 +75,7 @@ const Project = () => {
           }
         </DataContainer>
       </Container>
-      <ProjectCreateModal isOpen={isModalOpen} onClose={handleModalClose} />
+      <ProjectCreateModal title='프로젝트 생성' isOpen={isModalOpen} value={newProject} onClose={handleModalClose} onChange={handleInputChange} onConfirm={handleConfirmProject} />
     </ProjectWrapper>
   )
 }

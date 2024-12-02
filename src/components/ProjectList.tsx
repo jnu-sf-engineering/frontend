@@ -1,5 +1,8 @@
 import styled from '@emotion/styled'
-import React from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import React, { useState } from 'react'
+import putProject from '../api/putProject'
+import ProjectCreateModal from './ProjectCreateModal'
 
 interface ProjectDesign {
   width?: string
@@ -18,6 +21,39 @@ interface ProjectProps {
 type ProjectListProps = ProjectDesign & ProjectProps
 
 const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
+
+  const queryClient = useQueryClient()
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [newValue, setNewValue] = useState('')
+  const manager = localStorage.getItem('nickname')
+  const [editId, setEditId] = useState<number | null>(null)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
+
+  const mutationPutProject = useMutation({
+    mutationFn: putProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['project'] })
+      setIsEditModalOpen(false)
+    }
+  })
+
+  const handleEdit = (projectId: number) => {
+    setEditId(projectId)
+    setIsEditModalOpen(true)
+  }
+
+  const handleConfirmEdit = () => {
+    if (editId === null) {
+      return
+    }
+    mutationPutProject.mutate({ projectId: editId, projectName: newValue, manager: manager || '' })
+  }
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewValue(event?.target.value)
+  }
+
+
   return (
     <ProjectListWrapper width={width} projects={projects}>
       <ProjectListHeader>
@@ -28,13 +64,24 @@ const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
       <ProjectListContent>
         {projects?.map((item) => (
           <ProjectListElement key={item.projectId}>
-            <ProjectListItem flex={1.2}>{item.projectName}</ProjectListItem>
+            <ProjectListItem flex={1.2}>
+              {item.projectName}
+              <ProjectItemOption className='project-item-option'>
+                <ProjectModifyIcon onClick={() => handleEdit(item.projectId)} className='material-symbols-outlined'>edit</ProjectModifyIcon>
+                <ProjectDeleteIcon className='material-symbols-outlined'>delete</ProjectDeleteIcon>
+              </ProjectItemOption>
+            </ProjectListItem>
             <ProjectListItem flex={1}>{item.sprintCount || 0}개</ProjectListItem>
             <ProjectListItem flex={1}>{item.manager}</ProjectListItem>
           </ProjectListElement>
         ))}
       </ProjectListContent>
+      {isEditModalOpen && (
+        <ProjectCreateModal title='프로젝트 수정' isOpen={isEditModalOpen} onClose={() => {setIsEditModalOpen(false); setEditId(null);}} onConfirm={handleConfirmEdit} value={newValue} onChange={handleInputChange}
+        />
+      )}
     </ProjectListWrapper>
+    
   )
 }
 
@@ -56,7 +103,6 @@ const ProjectListHeader = styled.div`
 
 const ProjectListTitle = styled.div<{ flex: number }>`
   display: flex;
-  text-align: center;
   flex: ${({ flex }) => flex || 1};
   justify-content: center;
   align-items: center;
@@ -76,6 +122,13 @@ const ProjectListElement = styled.div`
   padding: 0.9rem;
   color: #555555;
   border-bottom: 0.1rem solid #D4D4DB;
+  cursor: pointer;
+  position: relative;
+
+  &:hover .project-item-option {
+    visibility: visible;
+    opacity: 1;
+  }
 
   &:last-child {
     border-bottom: none;
@@ -85,7 +138,37 @@ const ProjectListElement = styled.div`
 const ProjectListItem = styled.div<{ flex: number }>`
   flex: ${({ flex }) => flex || 1};
   text-align: center;
-  padding: 2px 0;
+  padding: 0.2rem 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+`
+
+const ProjectItemOption = styled.div`
+  margin-left: 0.8rem;
+  visibility: hidden;
+  opcatity: 0;
+  transition: opacity 0.2s;
+  color: #76787B;
+`
+
+const ProjectModifyIcon = styled.div`
+  font-size: 1.2rem;
+  margin-right: 0.4rem;
+
+  &:hover {
+    color: #6796D0;
+  }
+`
+
+const ProjectDeleteIcon = styled.div`
+  font-size: 1.2rem;
+
+  &:hover {
+    color: #B94A42;
+  }
 `
 
 export default ProjectList
