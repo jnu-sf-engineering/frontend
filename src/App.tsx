@@ -1,5 +1,7 @@
 import './App.css';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { setupAxiosInterceptor } from './api/axiosInstance';
 import Klomachenko from './pages/Klomachenko';
 import Project from './pages/Project';
 import Retro from './pages/Retro';
@@ -11,8 +13,7 @@ import RetroDetail from './pages/RetroDetail';
 import Join from './pages/Join';
 import RetroPick from './pages/RetroPick';
 import CompleteSprint from './pages/CompleteSprint';
-import { useEffect } from 'react';
-import { setupAxiosInterceptor } from './api/axiosInstance';
+import Kanban from './pages/Kanban';
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function AppRoutes() {
         <Route path='/retrodetail' element={<RetroDetail />} />
         <Route path='/retropick' element={<RetroPick />} />
         <Route path='/completesprint' element={<CompleteSprint />} />
+        <Route path='/kanban' element={<Kanban />} />
       </Routes>
     </>
   );
