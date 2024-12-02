@@ -2,15 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import styled from '@emotion/styled'
 interface ModalProps {
-  title: string
+  text: string
   isOpen: boolean
-  value: string
   onClose: () => void
-  onConfirm?: (projectName: string) => void
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onConfirm?: () => void
 }
 
-const ProjectCreateModal: React.FC<ModalProps> = ({ title, isOpen, onClose, onConfirm, value, onChange }) => {
+const ModalAlert: React.FC<ModalProps> = ({ text, isOpen, onClose, onConfirm }) => {
 
   if (!isOpen) return null
 
@@ -19,7 +17,7 @@ const ProjectCreateModal: React.FC<ModalProps> = ({ title, isOpen, onClose, onCo
 
   const handleConfirmClick = () => {
     if (onConfirm) {
-      onConfirm(value)
+      onConfirm()
     }
   }
 
@@ -30,11 +28,10 @@ const ProjectCreateModal: React.FC<ModalProps> = ({ title, isOpen, onClose, onCo
   return ReactDOM.createPortal(
     <ModalBackground onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
-        <ModalTitle>{title}</ModalTitle>
-        <ModalInput value={value || ''} onChange={onChange} placeholder='프로젝트 제목을 입력하세요' />
+        <ModalText>{text}</ModalText>
         <ModalBtnContainer>
-          <CancelBtn onClick={handleCancel}>취소</CancelBtn>
-          <DoneBtn onClick={handleConfirmClick}>확인</DoneBtn>
+            <CancelBtn onClick={handleCancel}>취소</CancelBtn>
+            <DoneBtn onClick={handleConfirmClick}>확인</DoneBtn>
         </ModalBtnContainer>
       </ModalContainer>
     </ModalBackground>,
@@ -56,7 +53,7 @@ const ModalBackground = styled.div`
 `
 
 const ModalContainer = styled.div`
-  width: 300px;
+  width: 350px;
   padding: 20px;
   background-color: white;
   border-radius: 10px;
@@ -67,21 +64,14 @@ const ModalContainer = styled.div`
   border: 3px solid #b5c3e9;
 `
 
-const ModalTitle = styled.div`
-  font-size: 18px;
+const ModalText = styled.div`
+  font-size: 1rem;
   width: 100%;
   text-align: center;
-  padding: 5px;
-  font-weight: 500;
-`
-
-const ModalInput = styled.input`
-  width: 96%;
-  padding: 0px 7px;
-  margin: 20px 0px;
-  box-sizing: border-box;
-  border: none;
-  outline: none;
+  padding: 1rem;
+  margin: 1rem 0;
+  white-space: pre-wrap;
+  line-height: 1.5rem;
 `
 
 const ModalBtnContainer = styled.div`
@@ -91,7 +81,7 @@ const ModalBtnContainer = styled.div`
 `
 
 const DoneBtn = styled.div`
-  padding: 0 5px;
+  padding: 0 0.3rem;
   color: #6d86cb;
   cursor: pointer;
 `
@@ -102,4 +92,4 @@ const CancelBtn = styled.div`
   cursor: pointer;
 `
 
-export default ProjectCreateModal
+export default ModalAlert
