@@ -49,7 +49,7 @@ function AppRoutes() {
         <Route path='/retrodetail' element={<RetroDetail />} />
         <Route path='/retropick' element={<RetroPick />} />
         <Route path='/completesprint' element={<CompleteSprint />} />
-        <Route path='/kanban' element={<Kanban />} />
+        <Route path='/kanban/:projectId' element={<Kanban />} />
       </Routes>
     </>
   );
