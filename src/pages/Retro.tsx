@@ -1,17 +1,50 @@
 import styled from '@emotion/styled'
 import RetroList from '../components/RetroList'
 import RetroSummary from '../components/RetroSummary'
+import { useParams } from 'react-router'
+import { useQuery } from '@tanstack/react-query'
+import getRetro from '../api/getRetro'
 
 const Retro = () => {
 
+  const { projectId } = useParams<{ projectId: string }>()
+  const projectIdNumber = Number(projectId)
+  
   const summaryText = '회고 내용입니다.\n회고 요약 3줄 내용입니다.\n회고 요약 내용입니다.'
+  const errorText = '회고가 존재하지 않습니다\n회고를 작성해주세요'
+  
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['retroList', projectId],
+    queryFn: () => getRetro({projectId: projectIdNumber}),
+    retry: 1
+  })
+
+  if (isLoading) {
+    <p>Loading</p>
+  }
+
+  if (isError || !data || !data.response) {
+    <p>Error</p>
+  }
 
   return (
     <RetroWrapper>
       <Title>회고 리스트</Title>
       <Container>
-        <RetroSummary content={summaryText} />
-        <RetroList />
+        
+        <DataContainer>
+          {data
+            ? <>
+                <RetroSummary content={summaryText} />
+                <RetroList data={data?.response} />
+              </>
+            : <ErrorWrapper>
+                <ErrorIcon className='material-symbols-outlined'>error</ErrorIcon>
+                <Error>{errorText}</Error>
+              </ErrorWrapper>
+          }
+        </DataContainer>
+        
       </Container>
     </RetroWrapper>
   )
@@ -46,4 +79,34 @@ const Container = styled.div`
   position: relative;
   line-height: 1.85rem;
 `
+
+const DataContainer = styled.div`
+  position: absolute;
+  top: 3rem;
+`
+
+const ErrorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(100vh - 30rem);
+`
+
+const ErrorIcon = styled.div`
+  color: #6A7AAC;
+  margin-bottom: 1.4rem;
+  font-size: 2.5rem;
+  font-weight: 300;
+`
+
+const Error = styled.div`
+  white-space: pre-line;
+  text-align: center;
+  line-height: 1.9rem;
+  color: #6A7AAC;
+  font-size: 1.15rem;
+`
+
 export default Retro
