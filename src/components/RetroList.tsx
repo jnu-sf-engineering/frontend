@@ -35,7 +35,7 @@ const RetroListWrapper = styled.div<RetroListProps>`
     display: flex;
     flex-direction: column;
     margin: 1rem;
-    width: ${({ width }) => width || '80rem'}
+    width: ${({ width }) => width || '60rem'}
 `
 
 const RetroListHeader = styled.div`
