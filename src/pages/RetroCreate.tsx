@@ -6,6 +6,8 @@ import { useLocation, useNavigate } from 'react-router'
 import { RETRO_TEMPLATE } from '../constants/retroTemplate'
 import { useMutation } from '@tanstack/react-query'
 import putRetrospects from '../api/putRetrospects'
+import GptAdvice from '../components/GptAdvice'
+import postRetroAdvice from '../api/postRetroAdvice'
 
 const RetroCreate = () => {
 
@@ -23,6 +25,10 @@ const RetroCreate = () => {
 
   const retroCreateMutation = useMutation({
     mutationFn: putRetrospects
+  })
+
+  const adviceMutation = useMutation({
+    mutationFn: postRetroAdvice
   })
 
   useEffect(() => {
@@ -56,12 +62,16 @@ const RetroCreate = () => {
     }
   }
 
+  const handleGpt = () => {
+    adviceMutation.mutate({ tempName: retroType, fieldValue: value })
+  }
 
   return (
     <RetroWrapper>
       <Title>회고록 작성 ({retroType})</Title>
       <Container>
         <MarkdownEditor value={value} onChange={handleMdChange} />
+        <GptAdvice onClick={handleGpt} />
         <Options>
           <OptionLine>
             <Checkbox type='checkbox' checked={isCheck} onChange={handleCheckboxChange} />
