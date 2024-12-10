@@ -93,6 +93,10 @@ const RetroListElement = styled.div`
   &:last-child {
     border-bottom: none;
   }
+
+  &:hover {
+    background-color: #F0F6FF;
+  }
 `
 
 const RetroListItem = styled.div<{ flexGrow?: number }>`
