@@ -19,13 +19,16 @@ const Retro = () => {
     retry: 1
   })
 
+
+
   if (isLoading) {
-    <p>Loading</p>
+    return <p>Loading</p>
   }
 
-  if (isError || !data || !data.response) {
-    <p>Error</p>
+  if (isError || !data || !data.retrospects) {
+    return <p>Error</p>
   }
+
 
   return (
     <RetroWrapper>
@@ -36,7 +39,7 @@ const Retro = () => {
           {data
             ? <>
                 <RetroSummary content={summaryText} />
-                <RetroList data={data?.response} />
+                <RetroList data={data?.retrospects} />
               </>
             : <ErrorWrapper>
                 <ErrorIcon className='material-symbols-outlined'>error</ErrorIcon>

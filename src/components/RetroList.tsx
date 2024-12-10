@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { useNavigate } from 'react-router'
 
 interface RetroListDesignProps {
   width?: string
@@ -20,6 +21,12 @@ interface RetroListProps {
 
 const RetroList = ({data}: RetroListProps) => {
 
+  const navigate = useNavigate()
+
+  const handleNavigate = (retroId: number) => {
+    navigate(`/retrodetail/${retroId}`)
+  }
+
   return (
     <RetroListWrapper>
       <RetroListHeader>
@@ -30,7 +37,7 @@ const RetroList = ({data}: RetroListProps) => {
       </RetroListHeader>
       <RetroListContent>
         {data?.map((item) => (
-          <RetroListElement key={item.retroId}>
+          <RetroListElement key={item.retroId} onClick={() => handleNavigate(item.retroId)}>
             <RetroListItem>{item.sprintName}</RetroListItem>
             <RetroListItem>{`${item.startDate} ~ ${item.endDate}`}</RetroListItem>
             <RetroListItem>{item.manager}</RetroListItem>
@@ -81,6 +88,7 @@ const RetroListElement = styled.div`
   padding: 0.9rem;
   color: #555555;
   border-bottom: 0.1rem solid #D4D4DB;
+  cursor: pointer;
 
   &:last-child {
     border-bottom: none;
