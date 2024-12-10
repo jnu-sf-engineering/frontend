@@ -1,9 +1,11 @@
 import styled from '@emotion/styled'
 import MarkdownEditor from '../components/MarkdownEditor'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DefaultButton from '../components/DefaultButton'
 import { useLocation, useNavigate } from 'react-router'
 import { RETRO_TEMPLATE } from '../constants/retroTemplate'
+import { useMutation } from '@tanstack/react-query'
+import putRetrospects from '../api/putRetrospects'
 
 const RetroCreate = () => {
 
@@ -11,10 +13,23 @@ const RetroCreate = () => {
 
   // 이전 화면(회고록 선택 화면)에서 navigate시 회고록 유형 이름 넘겨받음 (KPT, CSS, 4Ls)
   const location = useLocation()
+  const projectId = location.state?.projectId
+  const sprintId = location.state?.sprintId
   const retroType = location.state?.retroType as keyof typeof RETRO_TEMPLATE || 'KPT'
+  const retroId = location.state?.retroId
   const [value, setValue] = useState(RETRO_TEMPLATE[retroType].content)
   const [isCheck, setIsCheck] = useState(false)
   const [error, setError] = useState(false)
+
+  const retroCreateMutation = useMutation({
+    mutationFn: putRetrospects
+  })
+
+  useEffect(() => {
+    if (sprintId) {
+      setValue(RETRO_TEMPLATE[retroType].content.replace('# 스프린트1', `# 스프린트${sprintId}`))
+    }
+  }, [sprintId, retroType])
 
   const handleMdChange = (newValue: string | undefined) => {
       setValue(newValue || '')
@@ -33,8 +48,11 @@ const RetroCreate = () => {
       setError(true)
     } else {
       console.log('회고록 작성 완료\n', value)
-      // 작성완료 버튼 클릭시 통신 코드 추가 예정 (회고 요약 기능도)
-      navigate('/retro')
+      retroCreateMutation.mutate({ retroId, tempName: retroType, answer: value }, {
+        onSuccess: () => {
+          navigate(`/retro/${projectId}`, { state: { projectId } })
+        }
+      })
     }
   }
 

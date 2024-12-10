@@ -4,7 +4,16 @@ import { FaRegClock } from 'react-icons/fa';
 import RetroSummary from '../components/RetroSummary';
 import DefaultButton from '../components/DefaultButton';
 import SprintBar from '../components/SprintBar';
+import { useNavigate } from 'react-router';
 const Kanban = () => {
+  const navigate = useNavigate()
+  const projectId = 3
+  const sprintId = 3
+
+  const handleNavigate = () => {
+    navigate('/retropick', { state: { projectId, sprintId } })
+  }
+
   const summaryText =
     '회고 내용입니다.\n회고 요약 3줄 내용입니다.\n회고 요약 내용입니다.';
   return (
@@ -24,7 +33,7 @@ const Kanban = () => {
               9.30 ~ 10.13 (4일)
             </TimeInfoBox>
           </LeftInfoBox>
-          <DefaultButton text='스프린트 완료' />
+          <DefaultButton text='스프린트 완료' onClick={handleNavigate} />
         </DetailInfoBox>
         <RetroContainer>
           <KanbanBox>

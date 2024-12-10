@@ -9,6 +9,7 @@ const RetroPick = () => {
 
   const navigate = useNavigate()
   const location = useLocation()
+  const projectId = location.state?.projectId
   const sprintId = location.state?.sprintId
 
   const templateMutation = useMutation({
@@ -26,7 +27,7 @@ const RetroPick = () => {
   }
 
   const handleNavigate = (retroType: string, retroId: number) => {
-    navigate(`/retrocreate`, { state: { retroType, retroId } })
+    navigate(`/retrocreate`, { state: { projectId, sprintId, retroType, retroId } })
   }
   return (
     <RetroWrapper>
