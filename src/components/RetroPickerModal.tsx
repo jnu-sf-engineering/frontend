@@ -64,9 +64,10 @@ const RetroType = RETRO_TYPE;
 
 interface RetroPickerModalProps {
   retroType: keyof typeof RetroType;
+  onClick: () => void;
 }
 
-const RetroPickerModal: React.FC<RetroPickerModalProps> = ({ retroType }) => {
+const RetroPickerModal: React.FC<RetroPickerModalProps> = ({ retroType, onClick }) => {
   const { title, subTitle, content, buttonText } = RetroType[retroType];
 
   return (
@@ -82,6 +83,7 @@ const RetroPickerModal: React.FC<RetroPickerModalProps> = ({ retroType }) => {
           height='3.125rem'
           text={buttonText}
           fontSize='1.3125rem'
+          onClick={onClick}
         />
       </ButtonBox>
     </Container>

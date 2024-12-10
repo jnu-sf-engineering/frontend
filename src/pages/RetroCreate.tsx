@@ -9,7 +9,7 @@ const RetroCreate = () => {
 
   const navigate = useNavigate()
 
-  // 이전 화면(회고록 선택 화면)에서 navigate시 회고록 유형 이름 넘겨받도록 하기 (KPT, CSS, 4Ls)
+  // 이전 화면(회고록 선택 화면)에서 navigate시 회고록 유형 이름 넘겨받음 (KPT, CSS, 4Ls)
   const location = useLocation()
   const retroType = location.state?.retroType as keyof typeof RETRO_TEMPLATE || 'KPT'
   const [value, setValue] = useState(RETRO_TEMPLATE[retroType].content)

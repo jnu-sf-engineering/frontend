@@ -2,7 +2,6 @@ import './App.css';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { setupAxiosInterceptor } from './api/axiosInstance';
-import Klomachenko from './pages/Klomachenko';
 import Project from './pages/Project';
 import Retro from './pages/Retro';
 import LastSprint from './pages/LastSprint';
@@ -39,7 +38,6 @@ function AppRoutes() {
         <NavBar />
       )}
       <Routes>
-        <Route path='/min' element={<Klomachenko />} />
         <Route path='/login' element={<Login />} />
         <Route path='/join' element={<Join />} />
         <Route path='/project' element={<Project />} />

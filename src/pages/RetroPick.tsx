@@ -1,18 +1,42 @@
 import styled from '@emotion/styled';
-import RetroSummary from '../components/RetroSummary';
 import RetroNoticeModal from '../components/RetroNoticeModal';
 import RetroPickerModal from '../components/RetroPickerModal';
+import { useLocation, useNavigate } from 'react-router';
+import { useMutation } from '@tanstack/react-query';
+import postTemplates from '../api/postTemplates';
 
 const RetroPick = () => {
+
+  const navigate = useNavigate()
+  const location = useLocation()
+  const sprintId = location.state?.sprintId
+
+  const templateMutation = useMutation({
+    mutationFn: postTemplates
+  })
+
+  const handleClick = (tempName: string) => {
+    templateMutation.mutate({ sprintId, tempName }, {
+      onSuccess: (data) => {
+        if (data?.response?.retroId) {
+          handleNavigate(tempName, data.response.retroId)
+        }
+      }
+    })
+  }
+
+  const handleNavigate = (retroType: string, retroId: number) => {
+    navigate(`/retrocreate`, { state: { retroType, retroId } })
+  }
   return (
     <RetroWrapper>
       <Title>회고록 템플릿</Title>
       <Container>
         <RetroNoticeModal />
         <RetroContainer>
-          <RetroPickerModal retroType='KPT' />
-          <RetroPickerModal retroType='CSS' />
-          <RetroPickerModal retroType='FourLs' />
+          <RetroPickerModal retroType='KPT' onClick={() => handleClick('KPT')} />
+          <RetroPickerModal retroType='CSS' onClick={() => handleClick('CSS')} />
+          <RetroPickerModal retroType='FourLs' onClick={() => handleClick('4Ls')} />
         </RetroContainer>
       </Container>
     </RetroWrapper>
