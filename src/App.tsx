@@ -44,7 +44,7 @@ function AppRoutes() {
         <Route path='/retro/:projectId' element={<Retro />} />
         <Route path='/lastsprint' element={<LastSprint />} />
         <Route path='/retrocreate' element={<RetroCreate />} />
-        <Route path='/retrodetail' element={<RetroDetail />} />
+        <Route path='/retrodetail/:retroId' element={<RetroDetail />} />
         <Route path='/retropick' element={<RetroPick />} />
         <Route path='/completesprint' element={<CompleteSprint />} />
         <Route path='/kanban/:projectId' element={<Kanban />} />
