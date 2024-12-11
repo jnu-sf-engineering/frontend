@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import LogoImg from '../assets/logo_se.png'
 import { useEffect, useState } from 'react'
 
@@ -9,15 +9,11 @@ const NavBar = () => {
   const [isLogin, setIsLogin] = useState(false)
   const accessToken = localStorage.getItem('token')
   const nickname = localStorage.getItem('nickname')
-  const [projectId, setProjectId] = useState<string | null>(null)
+  const { projectId } = useParams()
 
   useEffect(() => {
     if (accessToken) {
       setIsLogin(true)
-    }
-    const storedProjectId = localStorage.getItem('projectId')
-    if (storedProjectId) {
-      setProjectId(storedProjectId)
     }
   }, [accessToken])
 
@@ -27,7 +23,7 @@ const NavBar = () => {
       <LeftMenu>
         <StyledLink to={'/'}><Logo src={LogoImg} width={60}/></StyledLink>
         <StyledLink to='/'><NavItem>프로젝트</NavItem></StyledLink>
-        {location.pathname !== '/' && <StyledLink to={`/retro/${projectId}`}><NavItem>회고록</NavItem></StyledLink>}
+        {location.pathname !== '/' && projectId && <StyledLink to={`/retro/${projectId}`}><NavItem>회고록</NavItem></StyledLink>}
         <StyledLink to='/lastsprint'><NavItem>지난 스프린트</NavItem></StyledLink>
       </LeftMenu>
       <RightMenu>

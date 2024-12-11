@@ -4,6 +4,7 @@ import RetroSummary from '../components/RetroSummary'
 import { useParams } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
 import getRetro from '../api/getRetro'
+import Loading from '../components/Loading'
 
 const Retro = () => {
 
@@ -22,32 +23,28 @@ const Retro = () => {
 
 
   if (isLoading) {
-    return <p>Loading</p>
+    return (
+      <Loading />
+    )
   }
 
   if (isError || !data || !data.retrospects) {
-    return <p>Error</p>
+    return (
+      <ErrorWrapper>
+        <ErrorIcon className='material-symbols-outlined'>error</ErrorIcon>
+        <Error>{errorText}</Error>
+      </ErrorWrapper>
+    )
   }
-
 
   return (
     <RetroWrapper>
       <Title>회고 리스트</Title>
       <Container>
-        
         <DataContainer>
-          {data
-            ? <>
-                <RetroSummary content={summaryText} />
-                <RetroList data={data?.retrospects} />
-              </>
-            : <ErrorWrapper>
-                <ErrorIcon className='material-symbols-outlined'>error</ErrorIcon>
-                <Error>{errorText}</Error>
-              </ErrorWrapper>
-          }
+          <RetroSummary content={summaryText} />
+          <RetroList data={data?.retrospects} />
         </DataContainer>
-        
       </Container>
     </RetroWrapper>
   )
@@ -94,7 +91,8 @@ const ErrorWrapper = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: calc(100vh - 30rem);
+  height: calc(80vh);
+  position: relative;
 `
 
 const ErrorIcon = styled.div`

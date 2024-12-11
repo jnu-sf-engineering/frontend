@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { setupAxiosInterceptor } from './api/axiosInstance';
 import Project from './pages/Project';
@@ -25,7 +25,6 @@ function App() {
 }
 
 function AppRoutes() {
-  const location = useLocation();
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -34,21 +33,34 @@ function AppRoutes() {
 
   return (
     <>
-      {location.pathname !== '/login' && location.pathname !== '/join' && (
+      {/* {location.pathname !== '/login' && location.pathname !== '/join' && (
         <NavBar />
-      )}
+      )} */}
       <Routes>
-        <Route path='/login' element={<Login />} />
-        <Route path='/join' element={<Join />} />
-        <Route path='/' element={<Project />} />
-        <Route path='/retro/:projectId' element={<Retro />} />
-        <Route path='/lastsprint' element={<LastSprint />} />
-        <Route path='/retrocreate' element={<RetroCreate />} />
-        <Route path='/retrodetail/:retroId' element={<RetroDetail />} />
-        <Route path='/retropick' element={<RetroPick />} />
-        <Route path='/completesprint' element={<CompleteSprint />} />
-        <Route path='/kanban/:projectId' element={<Kanban />} />
+        <Route element={<LayoutWithNavBar />}>
+            <Route path="/" element={<Project />} />
+            <Route path="/retro/:projectId" element={<Retro />} />
+            <Route path="/lastsprint" element={<LastSprint />} />
+            <Route path="/retrocreate" element={<RetroCreate />} />
+            <Route path="/retrodetail/:retroId" element={<RetroDetail />} />
+            <Route path="/retropick" element={<RetroPick />} />
+            <Route path="/completesprint" element={<CompleteSprint />} />
+            <Route path="/kanban/:projectId" element={<Kanban />} />
+          </Route>
+
+          {/* NavBar 없는 경로 */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/join" element={<Join />} />
       </Routes>
+    </>
+  );
+}
+
+function LayoutWithNavBar() {
+  return (
+    <>
+      <NavBar />
+      <Outlet />
     </>
   );
 }
