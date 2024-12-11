@@ -10,8 +10,6 @@ const Retro = () => {
 
   const { projectId } = useParams<{ projectId: string }>()
   const projectIdNumber = Number(projectId)
-  
-  const summaryText = '회고 내용입니다.\n회고 요약 3줄 내용입니다.\n회고 요약 내용입니다.'
   const errorText = '회고가 존재하지 않습니다\n회고를 작성해주세요'
   
   const { data, isLoading, isError } = useQuery({
@@ -19,8 +17,6 @@ const Retro = () => {
     queryFn: () => getRetro({projectId: projectIdNumber}),
     retry: 1
   })
-
-
 
   if (isLoading) {
     return (
@@ -42,7 +38,7 @@ const Retro = () => {
       <Title>회고 리스트</Title>
       <Container>
         <DataContainer>
-          <RetroSummary content={summaryText} />
+          <RetroSummary content={data?.summary} />
           <RetroList data={data?.retrospects} />
         </DataContainer>
       </Container>
@@ -67,7 +63,7 @@ const Title = styled.div`
   font-size: 1.7rem;
   color: #484848;
   font-weight: 600;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 `
 
 const Container = styled.div`
