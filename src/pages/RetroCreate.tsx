@@ -22,6 +22,8 @@ const RetroCreate = () => {
   const [value, setValue] = useState(RETRO_TEMPLATE[retroType].content)
   const [isCheck, setIsCheck] = useState(false)
   const [error, setError] = useState(false)
+  const [advice, setAdvice] = useState<string>('')
+  const [loading, setLoding] = useState(false)
 
   const retroCreateMutation = useMutation({
     mutationFn: putRetrospects
@@ -63,7 +65,16 @@ const RetroCreate = () => {
   }
 
   const handleGpt = () => {
-    adviceMutation.mutate({ tempName: retroType, fieldValue: value })
+    setLoding(true)
+    adviceMutation.mutate({ tempName: retroType, fieldValue: value }, {
+      onSuccess: (data) => {
+        setAdvice(data.response.advice)
+        setLoding(false)
+      },
+      onError: () => {
+        setLoding(false)
+      }
+    })
   }
 
   return (
@@ -71,7 +82,7 @@ const RetroCreate = () => {
       <Title>회고록 작성 ({retroType})</Title>
       <Container>
         <MarkdownEditor value={value} onChange={handleMdChange} />
-        <GptAdvice onClick={handleGpt} />
+        <GptAdvice onClick={handleGpt} advice={loading ? '로딩중입니다...' : advice} />
         <Options>
           <OptionLine>
             <Checkbox type='checkbox' checked={isCheck} onChange={handleCheckboxChange} />
@@ -130,7 +141,7 @@ const Options = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   width: 78rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   margin-bottom: 2rem;
 `
 

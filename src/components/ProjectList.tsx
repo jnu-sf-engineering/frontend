@@ -168,6 +168,10 @@ const ProjectListElement = styled.div`
   cursor: pointer;
   position: relative;
 
+  &:hover {
+    background-color: #F0F6FF;
+  }
+
   &:hover .project-item-option {
     visibility: visible;
     opacity: 1;

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router';
 const Kanban = () => {
   const navigate = useNavigate()
   const projectId = 3
-  const sprintId = 3
+  const sprintId = 4
 
   const handleNavigate = () => {
     navigate('/retropick', { state: { projectId, sprintId } })

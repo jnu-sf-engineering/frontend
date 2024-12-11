@@ -40,7 +40,7 @@ function AppRoutes() {
       <Routes>
         <Route path='/login' element={<Login />} />
         <Route path='/join' element={<Join />} />
-        <Route path='/project' element={<Project />} />
+        <Route path='/' element={<Project />} />
         <Route path='/retro/:projectId' element={<Retro />} />
         <Route path='/lastsprint' element={<LastSprint />} />
         <Route path='/retrocreate' element={<RetroCreate />} />
