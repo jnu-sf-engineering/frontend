@@ -145,7 +145,6 @@ const Error = styled.div`
   line-height: 1.9rem;
   color: #6A7AAC;
   font-size: 1.15rem;
-  
 `
 
 export default Project

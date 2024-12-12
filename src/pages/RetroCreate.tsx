@@ -1,20 +1,43 @@
 import styled from '@emotion/styled'
 import MarkdownEditor from '../components/MarkdownEditor'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DefaultButton from '../components/DefaultButton'
 import { useLocation, useNavigate } from 'react-router'
 import { RETRO_TEMPLATE } from '../constants/retroTemplate'
+import { useMutation } from '@tanstack/react-query'
+import putRetrospects from '../api/putRetrospects'
+import GptAdvice from '../components/GptAdvice'
+import postRetroAdvice from '../api/postRetroAdvice'
 
 const RetroCreate = () => {
 
   const navigate = useNavigate()
 
-  // 이전 화면(회고록 선택 화면)에서 navigate시 회고록 유형 이름 넘겨받도록 하기 (KPT, CSS, 4Ls)
+  // 이전 화면(회고록 선택 화면)에서 navigate시 회고록 유형 이름 넘겨받음 (KPT, CSS, 4Ls)
   const location = useLocation()
+  const projectId = location.state?.projectId
+  const sprintId = location.state?.sprintId
   const retroType = location.state?.retroType as keyof typeof RETRO_TEMPLATE || 'KPT'
+  const retroId = location.state?.retroId
   const [value, setValue] = useState(RETRO_TEMPLATE[retroType].content)
   const [isCheck, setIsCheck] = useState(false)
   const [error, setError] = useState(false)
+  const [advice, setAdvice] = useState<string>('')
+  const [loading, setLoding] = useState(false)
+
+  const retroCreateMutation = useMutation({
+    mutationFn: putRetrospects
+  })
+
+  const adviceMutation = useMutation({
+    mutationFn: postRetroAdvice
+  })
+
+  useEffect(() => {
+    if (sprintId) {
+      setValue(RETRO_TEMPLATE[retroType].content.replace('# 스프린트1', `# 스프린트${sprintId}`))
+    }
+  }, [sprintId, retroType])
 
   const handleMdChange = (newValue: string | undefined) => {
       setValue(newValue || '')
@@ -33,17 +56,33 @@ const RetroCreate = () => {
       setError(true)
     } else {
       console.log('회고록 작성 완료\n', value)
-      // 작성완료 버튼 클릭시 통신 코드 추가 예정 (회고 요약 기능도)
-      navigate('/retro')
+      retroCreateMutation.mutate({ retroId, tempName: retroType, answer: value }, {
+        onSuccess: () => {
+          navigate(`/retro/${projectId}`, { state: { projectId } })
+        }
+      })
     }
   }
 
+  const handleGpt = () => {
+    setLoding(true)
+    adviceMutation.mutate({ tempName: retroType, fieldValue: value }, {
+      onSuccess: (data) => {
+        setAdvice(data.response.advice)
+        setLoding(false)
+      },
+      onError: () => {
+        setLoding(false)
+      }
+    })
+  }
 
   return (
     <RetroWrapper>
       <Title>회고록 작성 ({retroType})</Title>
       <Container>
         <MarkdownEditor value={value} onChange={handleMdChange} />
+        <GptAdvice onClick={handleGpt} advice={loading ? '로딩중입니다...' : advice} />
         <Options>
           <OptionLine>
             <Checkbox type='checkbox' checked={isCheck} onChange={handleCheckboxChange} />
@@ -102,7 +141,7 @@ const Options = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   width: 78rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   margin-bottom: 2rem;
 `
 

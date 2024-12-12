@@ -1,22 +1,42 @@
 import styled from '@emotion/styled'
-import React from 'react'
+import React, { useEffect } from 'react'
 import MarkdownViewer from '../components/MarkdownViewer'
-import { RETRO_TEXT_KPT } from '../mocks/RetroTextMock'
 import RetroSummary from '../components/RetroSummary'
+import { useQuery } from '@tanstack/react-query'
+import getRetroDetail from '../api/getRetroDetail'
+import { useParams } from 'react-router'
 
 const RetroDetail = () => {
 
-  // 추후 통신 연결시 mdText를 회고록 내용으로 대체 예정
-  const mdText = RETRO_TEXT_KPT
-  const summaryText = '회고 내용입니다.\n회고 요약 3줄 내용입니다.\n회고 요약 내용입니다.'
+  const { retroId } = useParams<{ retroId: string }>()
+  const retroIdNum = Number(retroId)
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['retroDetail'],
+    queryFn: () => getRetroDetail({ retroId: retroIdNum }),
+    retry: 1
+  })
+
+  useEffect(() => {
+    console.log('retroId: ', retroIdNum)
+
+  }, [retroIdNum])
+
+  if (isLoading) {
+    return <p>Loading</p>
+  }
+
+  if (isError || !data || !data.response) {
+    return <p>Error</p>
+  }
 
   return (
     <RetroWrapper>
       <Title>회고록 상세보기</Title>
       <Container>
-        <RetroSummary content={summaryText} width='54.5rem' />
+        <RetroSummary content={data.response.retro} width='54.5rem' />
         <Space />
-        <MarkdownViewer text={mdText} />
+        <MarkdownViewer text={data.response.answer} />
       </Container>
     </RetroWrapper>
   )

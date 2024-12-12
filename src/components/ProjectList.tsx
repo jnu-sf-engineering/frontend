@@ -5,6 +5,7 @@ import putProject from '../api/putProject'
 import ProjectCreateModal from './ProjectCreateModal'
 import deleteProject from '../api/deleteProject'
 import ModalAlert from './ModalAlert'
+import { useNavigate } from 'react-router'
 
 interface ProjectDesign {
   width?: string
@@ -25,6 +26,7 @@ type ProjectListProps = ProjectDesign & ProjectProps
 const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
 
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [newValue, setNewValue] = useState('')
@@ -32,6 +34,10 @@ const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
   const [editId, setEditId] = useState<number | null>(null)
   const [deleteId, setDeleteId] = useState<number | null>(null)
   const [deleteName, setDeleteName] = useState<string | null>(null)
+
+  const handleProjectNavigate = (projectId: number) => {
+    navigate(`/kanban/${projectId}`)
+  }
 
   const mutationPutProject = useMutation({
     mutationFn: putProject,
@@ -47,6 +53,16 @@ const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
       queryClient.invalidateQueries({ queryKey: ['project'] })
     }
   })
+
+  const handleModifyClick = (projectId: number) => (event: React.MouseEvent) => {
+    event.stopPropagation()
+    handleEdit(projectId)
+  }
+
+  const handleDeleteClick = (projectId: number, projectName: string) => (event: React.MouseEvent) => {
+    event.stopPropagation()
+    handleDelete(projectId, projectName)
+  }
 
   const handleEdit = (projectId: number) => {
     setEditId(projectId)
@@ -88,12 +104,12 @@ const ProjectList: React.FC<ProjectListProps> = ({ width, projects }) => {
       </ProjectListHeader>
       <ProjectListContent>
         {projects?.map((item) => (
-          <ProjectListElement key={item.projectId}>
+          <ProjectListElement key={item.projectId} onClick={() => handleProjectNavigate(item.projectId)}>
             <ProjectListItem flex={1.2}>
               {item.projectName}
               <ProjectItemOption className='project-item-option'>
-                <ProjectModifyIcon onClick={() => handleEdit(item.projectId)} className='material-symbols-outlined'>edit</ProjectModifyIcon>
-                <ProjectDeleteIcon onClick={() => handleDelete(item.projectId, item.projectName)} className='material-symbols-outlined'>delete</ProjectDeleteIcon>
+                <ProjectModifyIcon onClick={(event) => handleModifyClick(item.projectId)(event)} className='material-symbols-outlined'>edit</ProjectModifyIcon>
+                <ProjectDeleteIcon onClick={(event) => handleDeleteClick(item.projectId, item.projectName)(event)} className='material-symbols-outlined'>delete</ProjectDeleteIcon>
               </ProjectItemOption>
             </ProjectListItem>
             <ProjectListItem flex={1}>{item.sprintCount || 0}개</ProjectListItem>
@@ -151,6 +167,10 @@ const ProjectListElement = styled.div`
   border-bottom: 0.1rem solid #D4D4DB;
   cursor: pointer;
   position: relative;
+
+  &:hover {
+    background-color: #F0F6FF;
+  }
 
   &:hover .project-item-option {
     visibility: visible;
