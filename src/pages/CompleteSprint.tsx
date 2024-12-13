@@ -31,7 +31,7 @@ const CompleteSprint = () => {
         <RetroContainer>
           <KanbanBox>
             <KanBanListTitle>할 일</KanBanListTitle>
-            <TaskCard
+            {/* <TaskCard
               taskContent='메인화면 컴포넌트 제작'
               authorName='박경준'
             />
@@ -64,7 +64,7 @@ const CompleteSprint = () => {
             <TaskCard
               taskContent='메인화면 컴포넌트 제작'
               authorName='박경준'
-            />
+            /> */}
           </KanbanBox>
         </RetroContainer>
       </Container>

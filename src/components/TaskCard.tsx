@@ -1,11 +1,14 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
+import postTaskCard from '../api/postTaskCard';
 
 interface TaskCardProps {
   width?: string;
   height?: string;
   taskContent?: string;
   authorName?: string;
+  card_id: number;
+  currentStatus: string;
 }
 
 const KanbanBox = styled.div<TaskCardProps>`
@@ -74,21 +77,45 @@ const TaskCard: React.FC<TaskCardProps> = ({
   authorName,
   width,
   height,
+  card_id,
+  currentStatus,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [status, setStatus] = useState(currentStatus);
 
   const handleClick = () => {
     setIsVisible(!isVisible); // 클릭 시 보이거나 숨김
   };
 
+  const handleStatusChange = async (newStatus: string) => {
+    try {
+      await postTaskCard({
+        content: taskContent || '',
+        participants: [authorName || ''],
+        status: newStatus,
+        card_id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <KanbanBox width={width} height={height} onClick={handleClick}>
+    <KanbanBox
+      width={width}
+      height={height}
+      card_id={card_id}
+      currentStatus={currentStatus}
+      onClick={handleClick}
+    >
       <ContentBox>{taskContent}</ContentBox>
       <NameBox>{authorName}</NameBox>
       <SelectBox isVisible={isVisible}>
-        <SelectBtn>할 일</SelectBtn>
-        <SelectBtn>진행중</SelectBtn>
-        <SelectBtn>완료</SelectBtn>
+        <SelectBtn onClick={() => handleStatusChange('to_do')}>할 일</SelectBtn>
+        <SelectBtn onClick={() => handleStatusChange('in_progress')}>
+          진행중
+        </SelectBtn>
+        <SelectBtn onClick={() => handleStatusChange('done')}>완료</SelectBtn>
       </SelectBox>
     </KanbanBox>
   );

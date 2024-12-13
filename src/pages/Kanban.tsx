@@ -7,7 +7,6 @@ import DefaultButton from '../components/DefaultButton';
 import SprintBar from '../components/SprintBar';
 import { useNavigate } from 'react-router';
 import getSprint from '../api/getSprint';
-import SprintListMock from '../mocks/SprintListMock';
 import postSprint from '../api/postSprint';
 import TaskCardInput from '../components/TaskCardInput';
 import postCard from '../api/postCard';
@@ -16,6 +15,7 @@ interface Card {
   card_id: number;
   content: string;
   participants: string[];
+  status: string;
 }
 
 interface SprintData {
@@ -154,6 +154,8 @@ const Kanban = () => {
                     key={card.card_id}
                     taskContent={card.content}
                     authorName={card.participants.join(', ')}
+                    card_id={card.card_id}
+                    currentStatus={card.status}
                   />
                 ))}
               </KanbanBox>
@@ -166,6 +168,8 @@ const Kanban = () => {
                     key={card.card_id}
                     taskContent={card.content}
                     authorName={card.participants.join(', ')}
+                    card_id={card.card_id}
+                    currentStatus={card.status}
                   />
                 ))}
               </KanbanBox>
@@ -178,6 +182,8 @@ const Kanban = () => {
                     key={card.card_id}
                     taskContent={card.content}
                     authorName={card.participants.join(', ')}
+                    card_id={card.card_id}
+                    currentStatus={card.status}
                   />
                 ))}
               </KanbanBox>
