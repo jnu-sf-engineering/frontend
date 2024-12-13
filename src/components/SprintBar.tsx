@@ -1,14 +1,16 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-const SprintBar = () => {
+interface BarProps {
+  sprintName?: string;
+}
+
+const SprintBar: React.FC<BarProps> = ({ sprintName }) => {
+  // 함수 선언에서 괄호 위치 수정
   return (
     <Container>
-      <SprintBtn>스프린트 1</SprintBtn>
-      <SprintBtn>스프린트 2</SprintBtn>
-      <SprintBtn>스프린트 3</SprintBtn>
-      <SprintBtn>스프린트 4</SprintBtn>
-      <SprintBtn>스프린트 5</SprintBtn>
+      <SprintBtn>{sprintName}</SprintBtn>
+      <SprintBtn>+</SprintBtn>
     </Container>
   );
 };
@@ -23,7 +25,8 @@ const Container = styled.div`
   gap: 0.1875rem;
 `;
 
-const SprintBtn = styled.button`
+const SprintBtn = styled.button<{ color?: string }>`
+  // color 속성에 타입 정의 추가
   width: 8.6875rem;
   height: 3.625rem;
   border: none;

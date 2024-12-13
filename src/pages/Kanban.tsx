@@ -5,7 +5,7 @@ import { FaRegClock } from 'react-icons/fa';
 import RetroSummary from '../components/RetroSummary';
 import DefaultButton from '../components/DefaultButton';
 import SprintBar from '../components/SprintBar';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import getSprint from '../api/getSprint';
 import postSprint from '../api/postSprint';
 import TaskCardInput from '../components/TaskCardInput';
@@ -33,32 +33,34 @@ interface SprintData {
 
 const Kanban = () => {
   const [sprintData, setSprintData] = useState<SprintData | null>(null);
-  const [isInputVisible, setIsInputVisible] = useState(false); // TaskCardInput 보이기/숨기기 상태
-  const [newTaskContent, setNewTaskContent] = useState(''); // 새 할 일 내용
-  const [newTaskParticipants, setNewTaskParticipants] = useState<string[]>([]); // 새 할 일 참여자
+  const [isInputVisible, setIsInputVisible] = useState(false);
+  const [newTaskContent, setNewTaskContent] = useState('');
+  const [newTaskParticipants, setNewTaskParticipants] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [sprintName, setSprintName] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [sprintId, setSprintId] = useState(null);
 
   const navigate = useNavigate();
-  const projectId = 3;
-  const sprintId = 5;
+  const params = useParams();
+  const projectId = params.projectId;
+
+  const fetchSprintData = async () => {
+    try {
+      const data = await getSprint({ sprint_id: sprintId });
+      setSprintData(data.response);
+    } catch (error) {
+      console.error('스프린트 데이터 요청 중 오류:', error);
+      setSprintData(null);
+    }
+  };
 
   useEffect(() => {
-    const fetchSprintData = async () => {
-      try {
-        const data = await getSprint({ sprint_id: sprintId });
-        console.log('스프린트 요청중', data.response);
-        setSprintData(data.response);
-      } catch (error) {
-        console.error('스프린트 데이터 요청 중 오류:', error);
-        setSprintData(null);
-      }
-    };
+    if (sprintId === null) return; // sprintId가 null일 경우 API 호출 방지
 
     fetchSprintData();
-  }, [sprintId, sprintData]);
-
-  const handleNavigate = () => {
-    navigate('/retropick', { state: { projectId, sprintId } });
-  };
+  }, [sprintId]);
 
   const handleTaskCardSubmit = async () => {
     if (newTaskContent && newTaskParticipants.length > 0) {
@@ -67,10 +69,11 @@ const Kanban = () => {
           sprint_id: sprintId,
           content: newTaskContent,
           participants: newTaskParticipants,
-          status: 'to_do', // 상태를 'to_do'로 설정
+          status: 'to_do',
         });
-        setSprintData(await getSprint({ sprint_id: sprintId })); // 스프린트 데이터 재요청
-        setIsInputVisible(false); // 입력 폼 숨기기
+        const updatedData = await getSprint({ sprint_id: sprintId });
+        setSprintData(updatedData.response);
+        setIsInputVisible(false);
       } catch (error) {
         console.error('할 일 추가 중 오류 발생:', error);
       }
@@ -80,28 +83,29 @@ const Kanban = () => {
   };
 
   const handlePostSprintClick = async () => {
-    try {
-      // 스프린트 생성
-      await postSprint({
-        project_id: 10,
-        name: 'Sprint 3',
-        start_date: '2024-12-12 10:40:37',
-        end_date: '2024-12-12 12:40:37',
-      });
+    if (sprintName && startDate && endDate) {
+      try {
+        const response = await postSprint({
+          project_id: Number(projectId),
+          name: sprintName,
+          start_date: startDate,
+          end_date: endDate,
+        }); // 생성된 스프린트 ID 설정
+        setIsModalOpen(false);
 
-      // 스프린트 생성 후 바로 getSprint 호출하여 데이터를 최신 상태로 가져오기
-      const data = await getSprint({ sprint_id: sprintId });
-      setSprintData(data.response);
-    } catch (error) {
-      console.error('스프린트 생성 중 오류 발생:', error);
+        setSprintId(response.response.sprint_id);
+        fetchSprintData();
+      } catch (error) {
+        console.error('스프린트 생성 중 오류 발생:', error);
+      }
+    } else {
+      alert('모든 필드를 채워주세요.');
     }
   };
 
   const handleDeleteCard = async (card_id: number) => {
     try {
-      // 카드 삭제 API 호출
       await deleteTaskCard({ card_id });
-      // 카드 삭제 후 sprintData에서 해당 카드를 제거
       setSprintData((prevData) => {
         if (!prevData) return prevData;
         return {
@@ -125,13 +129,58 @@ const Kanban = () => {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}년 ${
+      date.getMonth() + 1
+    }월 ${date.getDate()}일`;
+  };
+
   const summaryText =
     '회고 내용입니다.\n회고 요약 3줄 내용입니다.\n회고 요약 내용입니다.';
 
-  if (sprintData === null) {
+  if (sprintData == null) {
     return (
       <CenteredWrapper>
-        <DefaultButton text='스프린트 생성' onClick={handlePostSprintClick} />
+        <DefaultButton
+          text='스프린트 생성'
+          onClick={() => setIsModalOpen(true)}
+        />
+        {isModalOpen && (
+          <ModalWrapper>
+            <ModalContent>
+              <h2>스프린트 생성</h2>
+              <InputLabel>
+                스프린트 이름:
+                <InputField
+                  type='text'
+                  value={sprintName}
+                  onChange={(e) => setSprintName(e.target.value)}
+                />
+              </InputLabel>
+              <InputLabel>
+                시작일:
+                <InputField
+                  type='datetime-local'
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </InputLabel>
+              <InputLabel>
+                종료일:
+                <InputField
+                  type='datetime-local'
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </InputLabel>
+              <ModalActions>
+                <Button onClick={() => setIsModalOpen(false)}>취소</Button>
+                <Button onClick={handlePostSprintClick as any}>생성</Button>
+              </ModalActions>
+            </ModalContent>
+          </ModalWrapper>
+        )}
       </CenteredWrapper>
     );
   }
@@ -139,7 +188,7 @@ const Kanban = () => {
   return (
     <RetroWrapper>
       <SprintBarBox>
-        <SprintBar />
+        <SprintBar sprintName={sprintData?.name} />
       </SprintBarBox>
       <Container>
         <SummartContainer>
@@ -151,7 +200,9 @@ const Kanban = () => {
             <TimeInfoBox>
               <FaRegClock />
               {sprintData
-                ? `${sprintData.start_date} ~ ${sprintData.end_date}`
+                ? `${formatDate(sprintData.start_date)} ~ ${formatDate(
+                    sprintData.start_date
+                  )}`
                 : '데이터 없음'}
             </TimeInfoBox>
           </LeftInfoBox>
@@ -159,7 +210,6 @@ const Kanban = () => {
             text='스프린트 완료'
             onClick={() => console.log(sprintData)}
           />
-          <DefaultButton text='스프린트 생성' onClick={handlePostSprintClick} />
         </DetailInfoBox>
         <RetroContainer>
           {sprintData && sprintData.cards && (
@@ -228,6 +278,59 @@ const Kanban = () => {
 };
 
 export default Kanban;
+
+const Button = styled.button`
+  background-color: #007bff;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+const ModalWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const InputLabel = styled.label`
+  font-size: 1rem;
+`;
+
+const InputField = styled.input`
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 2rem;
+  width: 400px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
 
 const CenteredWrapper = styled.div`
   display: flex;

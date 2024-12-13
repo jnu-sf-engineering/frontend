@@ -1,7 +1,7 @@
 import sprintAxiosInstance from './sprintAxiosInstance';
 
 export interface getSprintProps {
-  sprint_id: number;
+  sprint_id: number | null;
 }
 
 const getSprint = async ({ sprint_id }: getSprintProps) => {

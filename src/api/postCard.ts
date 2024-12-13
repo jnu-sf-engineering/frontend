@@ -1,7 +1,7 @@
 import sprintAxiosInstance from './sprintAxiosInstance';
 
 export interface postCardProps {
-  sprint_id: number;
+  sprint_id: number | null;
   content: string;
   participants: string[];
   status: string;
