@@ -1,16 +1,15 @@
 import styled from '@emotion/styled';
-import React from 'react';
-
-// interface BoxProps {
-//   width?: string;
-//   height?: string;
-// }
+import React, { useState } from 'react';
+import postTaskCard from '../api/postTaskCard';
 
 interface TaskCardProps {
   width?: string;
   height?: string;
   taskContent?: string;
   authorName?: string;
+  card_id: number;
+  currentStatus: string;
+  onDeleteCard: (card_id: number) => void;
 }
 
 const KanbanBox = styled.div<TaskCardProps>`
@@ -25,6 +24,8 @@ const KanbanBox = styled.div<TaskCardProps>`
   padding: 0.625rem;
   display: flex;
   flex-direction: column;
+  position: relative;
+  transition: all 0.3s ease-in-out;
 `;
 
 const ContentBox = styled.div`
@@ -48,16 +49,93 @@ const NameBox = styled.div`
   justify-content: flex-end;
 `;
 
+const SelectBox = styled.div`
+  visibility: ${({ isVisible }: { isVisible: boolean }) =>
+    isVisible ? 'visible' : 'hidden'};
+  opacity: ${({ isVisible }: { isVisible: boolean }) => (isVisible ? 1 : 0)};
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  box-sizing: border-box;
+  width: 4rem;
+  height: 9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  position: absolute;
+  top: 40%;
+`;
+
+const SelectBtn = styled.button`
+  width: 100%;
+  background-color: #88afe3;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+`;
+
+const DeleteBtn = styled.button`
+  width: 100%;
+  background-color: orangered;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+`;
+
 const TaskCard: React.FC<TaskCardProps> = ({
   taskContent,
   authorName,
   width,
   height,
+  card_id,
+  currentStatus,
+  onDeleteCard,
 }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [status, setStatus] = useState(currentStatus);
+
+  const handleClick = () => {
+    setIsVisible(!isVisible); // 클릭 시 보이거나 숨김
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    try {
+      await postTaskCard({
+        content: taskContent || '',
+        participants: [authorName || ''],
+        status: newStatus,
+        card_id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteCard = () => {
+    onDeleteCard(card_id);
+  };
+
   return (
-    <KanbanBox width={width} height={height}>
+    <KanbanBox
+      width={width}
+      height={height}
+      card_id={card_id}
+      currentStatus={currentStatus}
+      onClick={handleClick}
+      onDeleteCard={function (card_id: number): void {
+        throw new Error('Function not implemented.');
+      }}
+    >
       <ContentBox>{taskContent}</ContentBox>
       <NameBox>{authorName}</NameBox>
+      <SelectBox isVisible={isVisible}>
+        <SelectBtn onClick={() => handleStatusChange('to_do')}>할 일</SelectBtn>
+        <SelectBtn onClick={() => handleStatusChange('in_progress')}>
+          진행중
+        </SelectBtn>
+        <SelectBtn onClick={() => handleStatusChange('done')}>완료</SelectBtn>
+        <DeleteBtn onClick={handleDeleteCard}>삭제</DeleteBtn>
+      </SelectBox>
     </KanbanBox>
   );
 };

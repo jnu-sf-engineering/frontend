@@ -6,38 +6,51 @@ import { useMutation } from '@tanstack/react-query';
 import postTemplates from '../api/postTemplates';
 
 const RetroPick = () => {
-
-  const navigate = useNavigate()
-  const location = useLocation()
-  const projectId = location.state?.projectId
-  const sprintId = location.state?.sprintId
+  const navigate = useNavigate();
+  const location = useLocation();
+  const projectId = location.state?.projectId;
+  const sprintId = location.state?.sprintId;
 
   const templateMutation = useMutation({
-    mutationFn: postTemplates
-  })
+    mutationFn: postTemplates,
+  });
 
   const handleClick = (tempName: string) => {
-    templateMutation.mutate({ sprintId, tempName }, {
-      onSuccess: (data) => {
-        if (data?.response?.retroId) {
-          handleNavigate(tempName, data.response.retroId)
-        }
+    templateMutation.mutate(
+      { sprintId, tempName },
+      {
+        onSuccess: (data) => {
+          if (data?.response?.retroId) {
+            handleNavigate(tempName, data.response.retroId);
+          }
+        },
       }
-    })
-  }
+    );
+  };
 
   const handleNavigate = (retroType: string, retroId: number) => {
-    navigate(`/retrocreate`, { state: { projectId, sprintId, retroType, retroId } })
-  }
+    navigate(`/retrocreate`, {
+      state: { projectId, sprintId, retroType, retroId },
+    });
+  };
   return (
     <RetroWrapper>
       <Title>회고록 템플릿</Title>
       <Container>
         <RetroNoticeModal />
         <RetroContainer>
-          <RetroPickerModal retroType='KPT' onClick={() => handleClick('KPT')} />
-          <RetroPickerModal retroType='CSS' onClick={() => handleClick('CSS')} />
-          <RetroPickerModal retroType='FourLs' onClick={() => handleClick('4Ls')} />
+          <RetroPickerModal
+            retroType='KPT'
+            onClick={() => handleClick('KPT')}
+          />
+          <RetroPickerModal
+            retroType='CSS'
+            onClick={() => handleClick('CSS')}
+          />
+          <RetroPickerModal
+            retroType='FourLs'
+            onClick={() => handleClick('4Ls')}
+          />
         </RetroContainer>
       </Container>
     </RetroWrapper>
@@ -77,12 +90,10 @@ const Container = styled.div`
   position: relative;
   line-height: 1.85rem;
   gap: 4rem;
-  border: 3px solid black;
 `;
 
 const RetroContainer = styled.div`
   display: flex;
   width: 72.125rem;
   justify-content: space-between;
-  border: 3px solid black;
 `;
