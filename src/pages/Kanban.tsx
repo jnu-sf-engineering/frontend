@@ -60,7 +60,7 @@ const Kanban = () => {
     if (sprintId === null) return; // sprintId가 null일 경우 API 호출 방지
 
     fetchSprintData();
-  }, [sprintId]);
+  }, [sprintId, sprintData]);
 
   const handleTaskCardSubmit = async () => {
     if (newTaskContent && newTaskParticipants.length > 0) {
@@ -136,6 +136,10 @@ const Kanban = () => {
     }월 ${date.getDate()}일`;
   };
 
+  const handleCompleteSprint = () => {
+    navigate('/retropick');
+  };
+
   const summaryText =
     '회고 내용입니다.\n회고 요약 3줄 내용입니다.\n회고 요약 내용입니다.';
 
@@ -208,7 +212,10 @@ const Kanban = () => {
           </LeftInfoBox>
           <DefaultButton
             text='스프린트 완료'
-            onClick={() => console.log(sprintData)}
+            onClick={() => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+              handleCompleteSprint;
+            }}
           />
         </DetailInfoBox>
         <RetroContainer>
