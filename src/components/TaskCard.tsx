@@ -9,6 +9,7 @@ interface TaskCardProps {
   authorName?: string;
   card_id: number;
   currentStatus: string;
+  onDeleteCard: (card_id: number) => void;
 }
 
 const KanbanBox = styled.div<TaskCardProps>`
@@ -60,12 +61,21 @@ const SelectBox = styled.div`
   flex-direction: column;
   gap: 0.2rem;
   position: absolute;
-  top: 50%;
+  top: 40%;
 `;
 
 const SelectBtn = styled.button`
   width: 100%;
   background-color: #88afe3;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+`;
+
+const DeleteBtn = styled.button`
+  width: 100%;
+  background-color: orangered;
   color: white;
   border: none;
   border-radius: 0.25rem;
@@ -79,6 +89,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   height,
   card_id,
   currentStatus,
+  onDeleteCard,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [status, setStatus] = useState(currentStatus);
@@ -100,6 +111,10 @@ const TaskCard: React.FC<TaskCardProps> = ({
     }
   };
 
+  const handleDeleteCard = () => {
+    onDeleteCard(card_id);
+  };
+
   return (
     <KanbanBox
       width={width}
@@ -107,6 +122,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
       card_id={card_id}
       currentStatus={currentStatus}
       onClick={handleClick}
+      onDeleteCard={function (card_id: number): void {
+        throw new Error('Function not implemented.');
+      }}
     >
       <ContentBox>{taskContent}</ContentBox>
       <NameBox>{authorName}</NameBox>
@@ -116,6 +134,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
           진행중
         </SelectBtn>
         <SelectBtn onClick={() => handleStatusChange('done')}>완료</SelectBtn>
+        <DeleteBtn onClick={handleDeleteCard}>삭제</DeleteBtn>
       </SelectBox>
     </KanbanBox>
   );

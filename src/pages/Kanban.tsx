@@ -10,6 +10,7 @@ import getSprint from '../api/getSprint';
 import postSprint from '../api/postSprint';
 import TaskCardInput from '../components/TaskCardInput';
 import postCard from '../api/postCard';
+import deleteTaskCard from '../api/deleteTaskCard';
 
 interface Card {
   card_id: number;
@@ -96,6 +97,34 @@ const Kanban = () => {
     }
   };
 
+  const handleDeleteCard = async (card_id: number) => {
+    try {
+      // 카드 삭제 API 호출
+      await deleteTaskCard({ card_id });
+      // 카드 삭제 후 sprintData에서 해당 카드를 제거
+      setSprintData((prevData) => {
+        if (!prevData) return prevData;
+        return {
+          ...prevData,
+          cards: {
+            ...prevData.cards,
+            to_do: prevData.cards.to_do.filter(
+              (card) => card.card_id !== card_id
+            ),
+            in_progress: prevData.cards.in_progress.filter(
+              (card) => card.card_id !== card_id
+            ),
+            done: prevData.cards.done.filter(
+              (card) => card.card_id !== card_id
+            ),
+          },
+        };
+      });
+    } catch (error) {
+      console.error('카드 삭제 중 오류 발생:', error);
+    }
+  };
+
   const summaryText =
     '회고 내용입니다.\n회고 요약 3줄 내용입니다.\n회고 요약 내용입니다.';
 
@@ -156,6 +185,7 @@ const Kanban = () => {
                     authorName={card.participants.join(', ')}
                     card_id={card.card_id}
                     currentStatus={card.status}
+                    onDeleteCard={handleDeleteCard}
                   />
                 ))}
               </KanbanBox>
@@ -170,6 +200,7 @@ const Kanban = () => {
                     authorName={card.participants.join(', ')}
                     card_id={card.card_id}
                     currentStatus={card.status}
+                    onDeleteCard={handleDeleteCard}
                   />
                 ))}
               </KanbanBox>
@@ -184,6 +215,7 @@ const Kanban = () => {
                     authorName={card.participants.join(', ')}
                     card_id={card.card_id}
                     currentStatus={card.status}
+                    onDeleteCard={handleDeleteCard}
                   />
                 ))}
               </KanbanBox>

@@ -13,7 +13,7 @@ interface TaskCardInputProps {
 const KanbanBox = styled.div<TaskCardInputProps>`
   box-sizing: border-box;
   width: ${({ width }) => width || '18.25rem'};
-  height: ${({ height }) => height || '6.625rem'};
+  height: ${({ height }) => height || '12rem'};
   background-color: white;
   cursor: pointer;
   color: #505050;
@@ -37,17 +37,23 @@ const ContentBox = styled.textarea`
   ::placeholder {
     color: #c7c8cb;
   }
+  &:focus {
+    outline: none;
+    border: none;
+  }
 `;
 
-const NameBox = styled.div`
-  box-sizing: border-box;
+const NameInput = styled.input`
+  border: 0.0625rem solid #88afe3;
+  border-radius: 0.25rem;
+`;
+
+const InputBox = styled.div`
   width: 100%;
   height: 20%;
-  font-size: 1rem;
-  color: #aeaaaa;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
 `;
 
 const TaskCardInput: React.FC<TaskCardInputProps> = ({
@@ -83,16 +89,22 @@ const TaskCardInput: React.FC<TaskCardInputProps> = ({
         value={content}
         onChange={handleContentChange}
       />
-      <NameBox>
-        <input
+      <InputBox>
+        <DefaultButton
+          text='완료'
+          onClick={onSubmit}
+          width='3rem'
+          fontSize='1rem'
+          height='2rem'
+        />
+
+        <NameInput
           type='text'
           placeholder='참여자 (콤마로 구분)'
           value={participants}
           onChange={handleParticipantsChange}
         />
-      </NameBox>
-      {/* onSubmit에 undefined를 전달하지 않고, 실제로 전달된 함수를 사용 */}
-      <DefaultButton text='완료' onClick={onSubmit} />
+      </InputBox>
     </KanbanBox>
   );
 };
