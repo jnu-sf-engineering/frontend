@@ -12,6 +12,7 @@ const Join = () => {
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
   const [pwCheck, setPwCheck] = useState('')
+  const [discord, setDiscord] = useState('')
   const [idError, setIdError] = useState('')
   const [isPwVisible, setIsPwVisible] = useState(false)
   const [isPwCheckVisible, setIsPwCheckVisible] = useState(false)
@@ -20,7 +21,8 @@ const Join = () => {
     nickname: '',
     email: '',
     pw: '',
-    pwCheck: ''
+    pwCheck: '',
+    discord: ''
   })
 
   const postJoin = useMutation({
@@ -57,6 +59,11 @@ const Join = () => {
     setErrorMessages((prev) => ({ ...prev, pwCheck: '' }))
   }
 
+  const handleDiscordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDiscord(e.target.value)
+    setErrorMessages((prev) => ({ ...prev, discord: '' }))
+  }
+
   const handleJoinSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
@@ -65,6 +72,7 @@ const Join = () => {
       email: !email ? '* 이메일을 입력해주세요' : '',
       pw: !pw ? '* 비밀번호를 입력해주세요' : '',
       pwCheck: !pwCheck ? '* 비밀번호 확인을 입력해주세요' : '',
+      discord: !discord ? '* 디스코드 Webhook url을 입력해주세요' : ''
     }
 
     // 회원가입 통신 코드
@@ -79,7 +87,7 @@ const Join = () => {
 
     if (Object.values(errors).some((msg) => msg)) return
 
-    await postJoin.mutateAsync({email, password: pw, nickname})
+    await postJoin.mutateAsync({email, password: pw, nickname, discord})
     alert('회원가입에 성공하였습니다! 로그인해주세요')
     navigate('/login')
   }
@@ -149,6 +157,18 @@ const Join = () => {
         </Line>
         {errorMessages.pwCheck && <ErrorMessage>{errorMessages.pwCheck}</ErrorMessage>}
       </InputWrapper>
+      <InputWrapper>
+        <Line>
+          <Label>디스코드 URL</Label>
+          <Input
+            type="text"
+            placeholder="디스코드 Webhook URL을 입력하세요"
+            value={discord}
+            onChange={handleDiscordChange}
+          />
+        </Line>
+        {errorMessages.discord && <ErrorMessage>{errorMessages.discord}</ErrorMessage>}
+      </InputWrapper>
       <Button onClick={handleJoinSubmit}>회원가입</Button>
       <Login>
         이미 계정이 있으신가요? <StyledLink to={'/login'}>로그인</StyledLink>
@@ -196,7 +216,7 @@ const InputWrapper = styled.div`
 `
 
 const Label = styled.div`
-  width: 5.5rem;
+  width: 5.7rem;
   margin-right: 2rem;
 `
 
