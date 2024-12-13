@@ -1,10 +1,5 @@
 import styled from '@emotion/styled';
-import React from 'react';
-
-// interface BoxProps {
-//   width?: string;
-//   height?: string;
-// }
+import React, { useState } from 'react';
 
 interface TaskCardProps {
   width?: string;
@@ -25,6 +20,8 @@ const KanbanBox = styled.div<TaskCardProps>`
   padding: 0.625rem;
   display: flex;
   flex-direction: column;
+  position: relative;
+  transition: all 0.3s ease-in-out;
 `;
 
 const ContentBox = styled.div`
@@ -48,16 +45,51 @@ const NameBox = styled.div`
   justify-content: flex-end;
 `;
 
+const SelectBox = styled.div`
+  visibility: ${({ isVisible }: { isVisible: boolean }) =>
+    isVisible ? 'visible' : 'hidden'};
+  opacity: ${({ isVisible }: { isVisible: boolean }) => (isVisible ? 1 : 0)};
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  box-sizing: border-box;
+  width: 4rem;
+  height: 9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  position: absolute;
+  top: 50%;
+`;
+
+const SelectBtn = styled.button`
+  width: 100%;
+  background-color: #88afe3;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+`;
+
 const TaskCard: React.FC<TaskCardProps> = ({
   taskContent,
   authorName,
   width,
   height,
 }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const handleClick = () => {
+    setIsVisible(!isVisible); // 클릭 시 보이거나 숨김
+  };
+
   return (
-    <KanbanBox width={width} height={height}>
+    <KanbanBox width={width} height={height} onClick={handleClick}>
       <ContentBox>{taskContent}</ContentBox>
       <NameBox>{authorName}</NameBox>
+      <SelectBox isVisible={isVisible}>
+        <SelectBtn>할 일</SelectBtn>
+        <SelectBtn>진행중</SelectBtn>
+        <SelectBtn>완료</SelectBtn>
+      </SelectBox>
     </KanbanBox>
   );
 };
