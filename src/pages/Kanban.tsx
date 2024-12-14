@@ -136,8 +136,9 @@ const Kanban = () => {
     }월 ${date.getDate()}일`;
   };
 
-  const handleCompleteSprint = () => {
-    navigate('/retropick');
+  const handleNavigate = () => {
+    navigate('/retropick', { state: { projectId, sprintId } });
+    console.log(projectId, sprintId);
   };
 
   const summaryText =
@@ -210,13 +211,7 @@ const Kanban = () => {
                 : '데이터 없음'}
             </TimeInfoBox>
           </LeftInfoBox>
-          <DefaultButton
-            text='스프린트 완료'
-            onClick={() => {
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              handleCompleteSprint;
-            }}
-          />
+          <DefaultButton text='스프린트 완료' onClick={handleNavigate} />
         </DetailInfoBox>
         <RetroContainer>
           {sprintData && sprintData.cards && (
